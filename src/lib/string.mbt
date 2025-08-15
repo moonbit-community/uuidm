@@ -24,7 +24,8 @@ fn hex_char_to_int(c : Char) -> Int {
 }
 
 /// Convert two hexadecimal characters to a byte
-fn hex_to_byte(h : Char, l : Char) -> Byte {
+/// Note: Currently unused but kept for future string parsing improvements
+fn _hex_to_byte(h : Char, l : Char) -> Byte {
   let high = hex_char_to_int(h)
   let low = hex_char_to_int(l)
   ((high << 4).lor(low)).to_byte()

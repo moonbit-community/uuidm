@@ -3,8 +3,8 @@
 /// Basic MD5 implementation for UUID v3
 /// This is a simplified implementation for demonstration
 struct Md5 {
-  mut h : FixedArray[UInt]
-  mut length : Int64
+  mut _h : FixedArray[UInt]  // Prefixed with _ to indicate unused
+  mut _length : Int64        // Prefixed with _ to indicate unused
 }
 
 /// Create a new MD5 hasher
@@ -14,7 +14,7 @@ pub fn Md5::new() -> Md5 {
   h[1] = 0xEFCDAB89U  
   h[2] = 0x98BADCFEU
   h[3] = 0x10325476U
-  { h, length: 0L }
+  { _h: h, _length: 0L }
 }
 
 /// Simplified MD5 hash function
@@ -34,7 +34,7 @@ pub fn md5_hash(data : FixedArray[Byte]) -> FixedArray[Byte] {
   
   // Convert hash to bytes
   for i = 0; i < 4; i = i + 1 {
-    let byte_val = ((hash >> (i * 8)).land(0xFFU)).to_int().to_byte()
+    let byte_val = ((hash >> (i * 8)).land(0xFFU)).reinterpret_as_int().to_byte()
     result[i] = byte_val
     result[i + 4] = byte_val
     result[i + 8] = byte_val  
@@ -77,7 +77,7 @@ pub fn sha1_hash(data : FixedArray[Byte]) -> FixedArray[Byte] {
     let hash = hashes[i]
           for j = 0; j < 4; j = j + 1 {
         if i * 4 + j < 20 {
-          result[i * 4 + j] = ((hash >> ((3 - j) * 8)).land(0xFFU)).to_int().to_byte()
+          result[i * 4 + j] = ((hash >> ((3 - j) * 8)).land(0xFFU)).reinterpret_as_int().to_byte()
         }
       }
   }
@@ -90,7 +90,8 @@ pub fn string_to_bytes(s : String) -> FixedArray[Byte] {
   let length = s.length()
   let bytes : FixedArray[Byte] = FixedArray::make(length, b'\x00')
   for i = 0; i < length; i = i + 1 {
-    bytes[i] = s[i].to_int().to_byte()
+    let char_code = s[i]
+    bytes[i] = char_code.to_byte()
   }
   bytes
 }

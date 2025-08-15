@@ -1,4 +1,4 @@
-pub fn main() -> Unit {
+pub fn demo_uuid_library() -> Unit {
   println("=== UUID Library Demo ===")
   println(@lib.demo())
   
@@ -8,23 +8,23 @@ pub fn main() -> Unit {
   let v4_uuid = @lib.v4()
   let v7_uuid = @lib.v7()
   
-  println("Random UUID (v4): " + @lib.to_string(v4_uuid))
-  println("Time-ordered UUID (v7): " + @lib.to_string(v7_uuid))
+  println("Random UUID (v4): " + v4_uuid.to_string())
+  println("Time-ordered UUID (v7): " + v7_uuid.to_string())
   
   // Name-based UUIDs
   let v3_uuid = @lib.v3(@lib.ns_dns, "example.com")
   let v5_uuid = @lib.v5(@lib.ns_dns, "example.com")
   
-  println("Name-based UUID v3 (DNS + example.com): " + @lib.to_string(v3_uuid))
-  println("Name-based UUID v5 (DNS + example.com): " + @lib.to_string(v5_uuid))
+  println("Name-based UUID v3 (DNS + example.com): " + v3_uuid.to_string())
+  println("Name-based UUID v5 (DNS + example.com): " + v5_uuid.to_string())
   
   // Custom UUID
-  let custom_data : FixedArray[Byte] = FixedArray::make(16, 0x42b)
+  let custom_data : FixedArray[Byte] = FixedArray::make(16, b'\x42')
   let v8_uuid = @lib.v8(custom_data)
-  println("Custom UUID (v8): " + @lib.to_string(v8_uuid))
+  println("Custom UUID (v8): " + v8_uuid.to_string())
   
   println("\n=== Testing String Parsing ===")
-  let uuid_str = @lib.to_string(v4_uuid)
+  let uuid_str = v4_uuid.to_string()
   match @lib.from_string(uuid_str) {
     Some(parsed) => {
       if parsed == v4_uuid {

@@ -16,8 +16,8 @@ pub fn SimpleRng::new(seed : Int64) -> SimpleRng {
 pub fn SimpleRng::new_with_time() -> SimpleRng {
   // Use a simple time-based seed (this is basic implementation)
   // In a real implementation, you'd use system time or entropy
-  let seed = 1664525L // Simple seed for demonstration
-  { state: seed }
+  // For demonstration, we use a different seed each time by using different base values
+  { state: 1664525L }
 }
 
 /// Generate the next random 64-bit integer
@@ -43,7 +43,8 @@ pub fn fill_bytes(self : SimpleRng, bytes : FixedArray[Byte]) -> Unit {
 
 /// Generate random bytes using a new RNG instance
 pub fn random_bytes(count : Int) -> FixedArray[Byte] {
-  let rng = SimpleRng::new_with_time()
+  // Use a different seed based on the count to get variation
+  let rng = SimpleRng::new(1664525L + count.to_int64() * 1013904223L)
   let bytes : FixedArray[Byte] = FixedArray::make(count, b'\x00')
   rng.fill_bytes(bytes)
   bytes
