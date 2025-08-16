@@ -43,7 +43,7 @@ fn _hex_to_byte(h : Char, l : Char) -> Byte {
 ///| Convert UUID to string representation with hyphens
 /// Format: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 pub fn to_string(self : Uuid) -> String {
-  let bytes = self.bytes
+  let bytes = self.0
   byte_to_hex(bytes[0]) +
   byte_to_hex(bytes[1]) +
   byte_to_hex(bytes[2]) +
@@ -68,7 +68,7 @@ pub fn to_string(self : Uuid) -> String {
 
 ///| Convert UUID to string representation without hyphens
 pub fn to_string_simple(self : Uuid) -> String {
-  let bytes = self.bytes
+  let bytes = self.0
   let mut result = ""
   for i = 0; i < 16; i = i + 1 {
     result = result + byte_to_hex(bytes[i])

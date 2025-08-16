@@ -4,9 +4,7 @@
 /// UUIDs are 128-bit identifiers that are unique across both space and time.
 
 ///| A UUID is represented as 16 bytes (128 bits)
-struct Uuid {
-  bytes : FixedArray[Byte]
-} derive(Eq, Compare)
+struct Uuid(FixedArray[Byte]) derive(Eq, Compare)
 
 
 ///| Show the UUID as a string which conforms to the UUID format (8-4-4-4-12) 
@@ -55,7 +53,7 @@ pub fn Uuid::new(bytes : FixedArray[Byte]) -> Uuid {
   if bytes.length() != 16 {
     abort("UUID must be exactly 16 bytes")
   }
-  { bytes, }
+  Uuid(bytes)
 }
 
 ///| Create a UUID from individual byte values
@@ -94,17 +92,17 @@ pub fn Uuid::from_bytes(
   bytes[13] = b13
   bytes[14] = b14
   bytes[15] = b15
-  { bytes, }
+  Uuid(bytes)
 }
 
 ///| Get the raw bytes of the UUID
 pub fn bytes(self : Uuid) -> FixedArray[Byte] {
-  self.bytes
+  self.0
 }
 
 ///| Get the variant of the UUID
 pub fn variant(self : Uuid) -> Variant {
-  let bits = self.bytes[8].to_int() >> 6
+  let bits = self.0[8].to_int() >> 6
   match bits {
     0 | 1 => Variant::Ncs
     2 | 3 => Variant::Rfc9562
@@ -119,7 +117,7 @@ pub fn version(self : Uuid) -> Version? {
   if self.variant() != Variant::Rfc9562 {
     None
   } else {
-    let version_bits = self.bytes[6].to_int() >> 4
+    let version_bits = self.0[6].to_int() >> 4
     match version_bits {
       1 => Some(Version::V1)
       2 => Some(Version::V2)
@@ -156,13 +154,13 @@ fn set_variant_and_version(bytes : FixedArray[Byte], version : Version) -> Unit 
 ///| Generate the nil UUID (all zeros)
 pub fn nil() -> Uuid {
   let bytes : FixedArray[Byte] = FixedArray::make(16, b'\x00')
-  { bytes, }
+  Uuid(bytes)
 }
 
 ///| Check if the UUID is nil (all zeros)
 pub fn is_nil(self : Uuid) -> Bool {
   for i = 0; i < 16; i = i + 1 {
-    if self.bytes[i] != b'\x00' {
+    if self.0[i] != b'\x00' {
       return false
     }
   }
@@ -172,13 +170,13 @@ pub fn is_nil(self : Uuid) -> Bool {
 ///| Generate the max UUID (all ones)
 pub fn max() -> Uuid {
   let bytes : FixedArray[Byte] = FixedArray::make(16, b'\xFF')
-  { bytes, }
+  Uuid(bytes)
 }
 
 ///| Check if the UUID is max (all ones)
 pub fn is_max(self : Uuid) -> Bool {
   for i = 0; i < 16; i = i + 1 {
-    if self.bytes[i] != b'\xFF' {
+    if self.0[i] != b'\xFF' {
       return false
     }
   }
