@@ -97,4 +97,8 @@ test "uuid_v3_generation" {
   if uuid != uuid2 {
     abort("v3 UUIDs with same name should be identical")
   }
+  inspect(
+    uuid,
+    content="{bytes: [b'\\x7F', b'\\xAA', b'\\x02', b'\\x93', b'\\x7F', b'\\xAA', b'\\x32', b'\\x93', b'\\xBF', b'\\xAA', b'\\x02', b'\\x93', b'\\x7F', b'\\xAA', b'\\x02', b'\\x93']}",
+  )
 }
