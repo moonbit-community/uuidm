@@ -6,8 +6,18 @@
 ///| A UUID is represented as 16 bytes (128 bits)
 struct Uuid {
   bytes : FixedArray[Byte]
-} derive(Eq, Compare, Show)
+} derive(Eq, Compare)
 
+
+///| Show the UUID as a string which conforms to the UUID format (8-4-4-4-12) 
+/// # Example
+/// ```
+/// let uuid = Uuid::from_bytes(b'\x7F', b'\xAA', b'\x02', b'\x93', b'\x7F', b'\xAA', b'\x32', b'\x93', b'\xBF', b'\xAA', b'\x02', b'\x93', b'\x7F', b'\xAA', b'\x02', b'\x93')
+/// println(uuid) // Output: 7faa0293-7faa-3293-bfaa-02937faa0293
+/// ```
+pub impl Show for Uuid with output(self, logger) {
+  logger.write_string(self.to_string())
+}
 ///| UUID variant as defined in RFC 9562
 enum Variant {
   /// Reserved for NCS compatibility (0b0xx)

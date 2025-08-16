@@ -99,6 +99,6 @@ test "uuid_v3_generation" {
   }
   inspect(
     uuid,
-    content="{bytes: [b'\\x7F', b'\\xAA', b'\\x02', b'\\x93', b'\\x7F', b'\\xAA', b'\\x32', b'\\x93', b'\\xBF', b'\\xAA', b'\\x02', b'\\x93', b'\\x7F', b'\\xAA', b'\\x02', b'\\x93']}",
+    content="7faa0293-7faa-3293-bfaa-02937faa0293",
   )
 }
