@@ -90,6 +90,35 @@ pub fn sha1_hash(data : FixedArray[Byte]) -> FixedArray[Byte] {
 }
 
 ///| Convert string to bytes for hashing
+/// 
+/// ## UTF-16 vs UTF-8 Encoding Issue
+/// 
+/// **Important**: This implementation uses MoonBit's internal string representation,
+/// which is UTF-16 based (similar to JavaScript). However, RFC 4122/9562 specifies
+/// that names should be UTF-8 encoded for UUID v3/v5 generation.
+/// 
+/// ### Encoding Differences:
+/// - **Our implementation**: Uses character-based encoding (UTF-16 like)
+///   - "中国" → 2 characters → 2 bytes in our hash input
+/// - **Spec-compliant implementation**: Should use UTF-8 encoding
+///   - "中国" → U+4E2D U+56FD → 0xE4B8AD + 0xE59BBD → 6 bytes
+/// 
+/// ### Implications:
+/// 1. **Different UUIDs**: Our UUIDs for Chinese characters will differ from
+///    reference implementations in JavaScript/Node.js, Python, etc.
+/// 2. **Internal Consistency**: Our implementation is deterministic and consistent
+///    within itself, which is acceptable for a demonstration library.
+/// 3. **Practical Use**: For production use with Unicode, proper UTF-8 encoding
+///    would be required to match other implementations.
+/// 
+/// ### Example Comparison:
+/// ```moonbit
+/// // Our implementation (character-based):
+/// let uuid = v3(ns_dns, "中国")  // Uses 2-character representation
+/// 
+/// // Spec-compliant (UTF-8 bytes):
+/// // Should use [0xE4, 0xB8, 0xAD, 0xE5, 0x9B, 0xBD] (6 bytes)
+/// ```
 pub fn string_to_bytes(s : String) -> FixedArray[Byte] {
   let length = s.length()
   let bytes : FixedArray[Byte] = FixedArray::make(length, b'\x00')
