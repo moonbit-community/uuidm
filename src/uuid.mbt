@@ -13,7 +13,7 @@ struct Uuid {
 /// # Example
 /// ```
 /// let uuid = Uuid::from_bytes(b'\x7F', b'\xAA', b'\x02', b'\x93', b'\x7F', b'\xAA', b'\x32', b'\x93', b'\xBF', b'\xAA', b'\x02', b'\x93', b'\x7F', b'\xAA', b'\x02', b'\x93')
-/// println(uuid) // Output: 7faa0293-7faa-3293-bfaa-02937faa0293
+/// inspect(uuid, content="7faa0293-7faa-3293-bfaa-02937faa0293")
 /// ```
 pub impl Show for Uuid with output(self, logger) {
   logger.write_string(self.to_string())
