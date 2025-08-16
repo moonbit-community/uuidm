@@ -1,0 +1,14 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "uuidm"
+
+// Values
+fn demo_uuid_library() -> Unit
+
+// Errors
+
+// Types and methods
+
+// Type aliases
+
+// Traits
+

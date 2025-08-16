@@ -1,0 +1,120 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "uuidm/lib"
+
+// Values
+fn combine_namespace_and_name(Uuid, String) -> FixedArray[Byte]
+
+fn demo() -> String
+
+fn extract_custom_data(Uuid) -> FixedArray[Byte]?
+
+fn extract_timestamp(Uuid) -> Int64?
+
+fn from_string(String) -> Uuid?
+
+fn from_string_exn(String) -> Uuid
+
+fn from_urn(String) -> Uuid?
+
+fn from_urn_exn(String) -> Uuid
+
+fn max() -> Uuid
+
+fn md5_hash(FixedArray[Byte]) -> FixedArray[Byte]
+
+fn nil() -> Uuid
+
+let ns_dns : Uuid
+
+let ns_oid : Uuid
+
+let ns_url : Uuid
+
+let ns_x500 : Uuid
+
+fn random_bytes(Int) -> FixedArray[Byte]
+
+fn sha1_hash(FixedArray[Byte]) -> FixedArray[Byte]
+
+fn string_to_bytes(String) -> FixedArray[Byte]
+
+fn v3(Uuid, String) -> Uuid
+
+fn v3_dns(String) -> Uuid
+
+fn v3_oid(String) -> Uuid
+
+fn v3_url(String) -> Uuid
+
+fn v3_x500(String) -> Uuid
+
+fn v4() -> Uuid
+
+fn v4_bulk(Int) -> Array[Uuid]
+
+fn v4_with_rng(SimpleRng) -> Uuid
+
+fn v5(Uuid, String) -> Uuid
+
+fn v5_dns(String) -> Uuid
+
+fn v5_oid(String) -> Uuid
+
+fn v5_url(String) -> Uuid
+
+fn v5_x500(String) -> Uuid
+
+fn v7() -> Uuid
+
+fn v7_sequence(Int) -> Array[Uuid]
+
+fn v7_with_timestamp(Int64) -> Uuid
+
+fn v8(FixedArray[Byte]) -> Uuid
+
+fn v8_counter(Int64, Int, Int) -> Uuid
+
+fn v8_from_int128(Int64, Int64) -> Uuid
+
+fn v8_mixed(Int64, Int) -> Uuid
+
+// Errors
+
+// Types and methods
+type Md5
+fn Md5::new() -> Self
+
+type SimpleRng
+fn SimpleRng::fill_bytes(Self, FixedArray[Byte]) -> Unit
+fn SimpleRng::new(Int64) -> Self
+fn SimpleRng::new_with_time() -> Self
+fn SimpleRng::next_byte(Self) -> Byte
+fn SimpleRng::next_int64(Self) -> Int64
+
+type Uuid
+fn Uuid::bytes(Self) -> FixedArray[Byte]
+fn Uuid::from_bytes(Byte, Byte, Byte, Byte, Byte, Byte, Byte, Byte, Byte, Byte, Byte, Byte, Byte, Byte, Byte, Byte) -> Self
+fn Uuid::is_max(Self) -> Bool
+fn Uuid::is_nil(Self) -> Bool
+fn Uuid::new(FixedArray[Byte]) -> Self
+fn Uuid::to_string(Self) -> String
+fn Uuid::to_string_simple(Self) -> String
+fn Uuid::to_urn(Self) -> String
+fn Uuid::variant(Self) -> Variant
+fn Uuid::version(Self) -> Version?
+impl Compare for Uuid
+impl Eq for Uuid
+impl Show for Uuid
+
+type Variant
+impl Eq for Variant
+impl Show for Variant
+
+type Version
+impl Eq for Version
+impl Show for Version
+
+// Type aliases
+
+// Traits
+
