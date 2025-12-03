@@ -1,0 +1,122 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "bobzhang/uuidm"
+
+// Values
+pub fn combine_namespace_and_name(Uuid, String) -> FixedArray[Byte]
+
+pub fn demo() -> String
+
+pub fn demo_uuid_library() -> Unit
+
+pub fn extract_custom_data(Uuid) -> FixedArray[Byte]?
+
+pub fn extract_timestamp(Uuid) -> Int64?
+
+pub fn from_string(String) -> Uuid?
+
+pub fn from_string_exn(String) -> Uuid
+
+pub fn from_urn(String) -> Uuid?
+
+pub fn from_urn_exn(String) -> Uuid
+
+pub fn max() -> Uuid
+
+pub fn md5_hash(FixedArray[Byte]) -> FixedArray[Byte]
+
+pub fn nil() -> Uuid
+
+pub let ns_dns : Uuid
+
+pub let ns_oid : Uuid
+
+pub let ns_url : Uuid
+
+pub let ns_x500 : Uuid
+
+pub fn random_bytes(Int) -> FixedArray[Byte]
+
+pub fn sha1_hash(FixedArray[Byte]) -> FixedArray[Byte]
+
+pub fn string_to_bytes(String) -> FixedArray[Byte]
+
+pub fn v3(Uuid, String) -> Uuid
+
+pub fn v3_dns(String) -> Uuid
+
+pub fn v3_oid(String) -> Uuid
+
+pub fn v3_url(String) -> Uuid
+
+pub fn v3_x500(String) -> Uuid
+
+pub fn v4() -> Uuid
+
+pub fn v4_bulk(Int) -> Array[Uuid]
+
+pub fn v4_with_rng(SimpleRng) -> Uuid
+
+pub fn v5(Uuid, String) -> Uuid
+
+pub fn v5_dns(String) -> Uuid
+
+pub fn v5_oid(String) -> Uuid
+
+pub fn v5_url(String) -> Uuid
+
+pub fn v5_x500(String) -> Uuid
+
+pub fn v7() -> Uuid
+
+pub fn v7_sequence(Int) -> Array[Uuid]
+
+pub fn v7_with_timestamp(Int64) -> Uuid
+
+pub fn v8(FixedArray[Byte]) -> Uuid
+
+pub fn v8_counter(Int64, Int, Int) -> Uuid
+
+pub fn v8_from_int128(Int64, Int64) -> Uuid
+
+pub fn v8_mixed(Int64, Int) -> Uuid
+
+// Errors
+
+// Types and methods
+type Md5
+pub fn Md5::new() -> Self
+
+type SimpleRng
+pub fn SimpleRng::fill_bytes(Self, FixedArray[Byte]) -> Unit
+pub fn SimpleRng::new(Int64) -> Self
+pub fn SimpleRng::new_with_time() -> Self
+pub fn SimpleRng::next_byte(Self) -> Byte
+pub fn SimpleRng::next_int64(Self) -> Int64
+
+type Uuid
+pub fn Uuid::bytes(Self) -> FixedArray[Byte]
+pub fn Uuid::from_bytes(Byte, Byte, Byte, Byte, Byte, Byte, Byte, Byte, Byte, Byte, Byte, Byte, Byte, Byte, Byte, Byte) -> Self
+pub fn Uuid::is_max(Self) -> Bool
+pub fn Uuid::is_nil(Self) -> Bool
+pub fn Uuid::new(FixedArray[Byte]) -> Self
+pub fn Uuid::to_string(Self) -> String
+pub fn Uuid::to_string_simple(Self) -> String
+pub fn Uuid::to_urn(Self) -> String
+pub fn Uuid::variant(Self) -> Variant
+pub fn Uuid::version(Self) -> Version?
+pub impl Compare for Uuid
+pub impl Eq for Uuid
+pub impl Show for Uuid
+
+type Variant
+pub impl Eq for Variant
+pub impl Show for Variant
+
+type Version
+pub impl Eq for Version
+pub impl Show for Version
+
+// Type aliases
+
+// Traits
+

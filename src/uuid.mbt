@@ -3,11 +3,12 @@
 /// This library implements UUID versions 3, 4, 5, 7, and 8 according to RFC 9562.
 /// UUIDs are 128-bit identifiers that are unique across both space and time.
 
-///| A UUID is represented as 16 bytes (128 bits)
+///|
+/// A UUID is represented as 16 bytes (128 bits)
 struct Uuid(FixedArray[Byte]) derive(Eq, Compare)
 
-
-///| Show the UUID as a string which conforms to the UUID format (8-4-4-4-12) 
+///|
+/// Show the UUID as a string which conforms to the UUID format (8-4-4-4-12) 
 /// # Example
 /// ```
 /// let uuid = Uuid::from_bytes(b'\x7F', b'\xAA', b'\x02', b'\x93', b'\x7F', b'\xAA', b'\x32', b'\x93', b'\xBF', b'\xAA', b'\x02', b'\x93', b'\x7F', b'\xAA', b'\x02', b'\x93')
@@ -16,7 +17,9 @@ struct Uuid(FixedArray[Byte]) derive(Eq, Compare)
 pub impl Show for Uuid with output(self, logger) {
   logger.write_string(self.to_string())
 }
-///| UUID variant as defined in RFC 9562
+
+///|
+/// UUID variant as defined in RFC 9562
 enum Variant {
   /// Reserved for NCS compatibility (0b0xx)
   Ncs
@@ -28,7 +31,8 @@ enum Variant {
   Reserved
 } derive(Eq, Show)
 
-///| UUID version as defined in RFC 9562
+///|
+/// UUID version as defined in RFC 9562
 enum Version {
   /// Version 1: Time-based (deprecated)
   V1
@@ -48,7 +52,8 @@ enum Version {
   V8
 } derive(Eq, Show)
 
-///| Create a new UUID from 16 bytes
+///|
+/// Create a new UUID from 16 bytes
 pub fn Uuid::new(bytes : FixedArray[Byte]) -> Uuid {
   if bytes.length() != 16 {
     abort("UUID must be exactly 16 bytes")
@@ -56,7 +61,8 @@ pub fn Uuid::new(bytes : FixedArray[Byte]) -> Uuid {
   Uuid(bytes)
 }
 
-///| Create a UUID from individual byte values
+///|
+/// Create a UUID from individual byte values
 pub fn Uuid::from_bytes(
   b0 : Byte,
   b1 : Byte,
@@ -95,13 +101,15 @@ pub fn Uuid::from_bytes(
   Uuid(bytes)
 }
 
-///| Get the raw bytes of the UUID
-pub fn bytes(self : Uuid) -> FixedArray[Byte] {
+///|
+/// Get the raw bytes of the UUID
+pub fn Uuid::bytes(self : Uuid) -> FixedArray[Byte] {
   self.0
 }
 
-///| Get the variant of the UUID
-pub fn variant(self : Uuid) -> Variant {
+///|
+/// Get the variant of the UUID
+pub fn Uuid::variant(self : Uuid) -> Variant {
   let bits = self.0[8].to_int() >> 6
   match bits {
     0 | 1 => Variant::Ncs
@@ -112,8 +120,9 @@ pub fn variant(self : Uuid) -> Variant {
   }
 }
 
-///| Get the version of the UUID (only meaningful for RFC 9562 variant)
-pub fn version(self : Uuid) -> Version? {
+///|
+/// Get the version of the UUID (only meaningful for RFC 9562 variant)
+pub fn Uuid::version(self : Uuid) -> Version? {
   if self.variant() != Variant::Rfc9562 {
     None
   } else {
@@ -132,7 +141,8 @@ pub fn version(self : Uuid) -> Version? {
   }
 }
 
-///| Set the variant and version bits for an RFC 9562 UUID
+///|
+/// Set the variant and version bits for an RFC 9562 UUID
 fn set_variant_and_version(bytes : FixedArray[Byte], version : Version) -> Unit {
   // Set variant bits (bits 6-7 of octet 8) to 10 (RFC 9562)
   bytes[8] = bytes[8].to_int().land(0x3F).lor(0x80).to_byte()
@@ -151,14 +161,16 @@ fn set_variant_and_version(bytes : FixedArray[Byte], version : Version) -> Unit 
   bytes[6] = bytes[6].to_int().land(0x0F).lor(version_int << 4).to_byte()
 }
 
-///| Generate the nil UUID (all zeros)
+///|
+/// Generate the nil UUID (all zeros)
 pub fn nil() -> Uuid {
   let bytes : FixedArray[Byte] = FixedArray::make(16, b'\x00')
   Uuid(bytes)
 }
 
-///| Check if the UUID is nil (all zeros)
-pub fn is_nil(self : Uuid) -> Bool {
+///|
+/// Check if the UUID is nil (all zeros)
+pub fn Uuid::is_nil(self : Uuid) -> Bool {
   for i = 0; i < 16; i = i + 1 {
     if self.0[i] != b'\x00' {
       return false
@@ -167,14 +179,16 @@ pub fn is_nil(self : Uuid) -> Bool {
   true
 }
 
-///| Generate the max UUID (all ones)
+///|
+/// Generate the max UUID (all ones)
 pub fn max() -> Uuid {
   let bytes : FixedArray[Byte] = FixedArray::make(16, b'\xFF')
   Uuid(bytes)
 }
 
-///| Check if the UUID is max (all ones)
-pub fn is_max(self : Uuid) -> Bool {
+///|
+/// Check if the UUID is max (all ones)
+pub fn Uuid::is_max(self : Uuid) -> Bool {
   for i = 0; i < 16; i = i + 1 {
     if self.0[i] != b'\xFF' {
       return false

@@ -1,6 +1,7 @@
 /// String conversion utilities for UUIDs
 
-///| Convert a byte to a two-character hexadecimal string
+///|
+/// Convert a byte to a two-character hexadecimal string
 fn byte_to_hex(b : Byte) -> String {
   let high = (b.to_int() >> 4) & 0xF
   let low = b.to_int() & 0xF
@@ -18,7 +19,8 @@ fn byte_to_hex(b : Byte) -> String {
   Int::unsafe_to_char(low_char).to_string()
 }
 
-///| Convert a hexadecimal character to its numeric value
+///|
+/// Convert a hexadecimal character to its numeric value
 fn hex_char_to_int(c : Char) -> Int {
   let code = c.to_int()
   if code >= '0'.to_int() && code <= '9'.to_int() {
@@ -32,7 +34,8 @@ fn hex_char_to_int(c : Char) -> Int {
   }
 }
 
-///| Convert two hexadecimal characters to a byte
+///|
+/// Convert two hexadecimal characters to a byte
 /// Note: Currently unused but kept for future string parsing improvements
 fn _hex_to_byte(h : Char, l : Char) -> Byte {
   let high = hex_char_to_int(h)
@@ -40,9 +43,10 @@ fn _hex_to_byte(h : Char, l : Char) -> Byte {
   (high << 4).lor(low).to_byte()
 }
 
-///| Convert UUID to string representation with hyphens
+///|
+/// Convert UUID to string representation with hyphens
 /// Format: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
-pub fn to_string(self : Uuid) -> String {
+pub fn Uuid::to_string(self : Uuid) -> String {
   let bytes = self.0
   byte_to_hex(bytes[0]) +
   byte_to_hex(bytes[1]) +
@@ -66,8 +70,9 @@ pub fn to_string(self : Uuid) -> String {
   byte_to_hex(bytes[15])
 }
 
-///| Convert UUID to string representation without hyphens
-pub fn to_string_simple(self : Uuid) -> String {
+///|
+/// Convert UUID to string representation without hyphens
+pub fn Uuid::to_string_simple(self : Uuid) -> String {
   let bytes = self.0
   let mut result = ""
   for i = 0; i < 16; i = i + 1 {
@@ -76,7 +81,8 @@ pub fn to_string_simple(self : Uuid) -> String {
   result
 }
 
-///| Parse UUID from string representation
+///|
+/// Parse UUID from string representation
 /// Accepts both hyphenated and non-hyphenated formats
 pub fn from_string(s : String) -> Uuid? {
   // Remove hyphens and convert to lowercase 
@@ -98,7 +104,8 @@ pub fn from_string(s : String) -> Uuid? {
   Some(Uuid::new(bytes))
 }
 
-///| Parse UUID from string, panics on invalid input
+///|
+/// Parse UUID from string, panics on invalid input
 pub fn from_string_exn(s : String) -> Uuid {
   match from_string(s) {
     Some(uuid) => uuid
@@ -106,23 +113,26 @@ pub fn from_string_exn(s : String) -> Uuid {
   }
 }
 
-///| Convert UUID to URN string representation
+///|
+/// Convert UUID to URN string representation
 /// Format: urn:uuid:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
-pub fn to_urn(self : Uuid) -> String {
+pub fn Uuid::to_urn(self : Uuid) -> String {
   "urn:uuid:" + self.to_string()
 }
 
-///| Parse UUID from URN string representation
+///|
+/// Parse UUID from URN string representation
 pub fn from_urn(s : String) -> Uuid? {
   if s.length() > 9 {
-    let uuid_part = s.substring(start=9)
+    let uuid_part = s[9:].to_string() catch { _ => return None }
     from_string(uuid_part)
   } else {
     None
   }
 }
 
-///| Parse UUID from URN string, panics on invalid input
+///|
+/// Parse UUID from URN string, panics on invalid input
 pub fn from_urn_exn(s : String) -> Uuid {
   match from_urn(s) {
     Some(uuid) => uuid

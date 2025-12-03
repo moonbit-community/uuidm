@@ -1,4 +1,5 @@
-///| Integration tests for the UUID library
+///|
+/// Integration tests for the UUID library
 /// Testing end-to-end functionality and realistic usage scenarios
 test "real_world_usage_scenario" {
   // Simulate a real application using UUIDs

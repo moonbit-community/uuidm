@@ -1,44 +1,41 @@
-///| Comprehensive snapshot tests for UUID library
+///|
+/// Comprehensive snapshot tests for UUID library
 /// These tests use MoonBit's snapshot testing to verify output formats
-
 test "uuid_show_implementation_snapshot" {
   // Test the Show trait implementation with specific byte patterns
   let uuid1 = Uuid::from_bytes(
-    b'\x7F', b'\xAA', b'\x02', b'\x93', 
-    b'\x7F', b'\xAA', 
-    b'\x32', b'\x93', 
-    b'\xBF', b'\xAA', 
-    b'\x02', b'\x93', b'\x7F', b'\xAA', b'\x02', b'\x93'
+    b'\x7F', b'\xAA', b'\x02', b'\x93', b'\x7F', b'\xAA', b'\x32', b'\x93', b'\xBF',
+    b'\xAA', b'\x02', b'\x93', b'\x7F', b'\xAA', b'\x02', b'\x93',
   )
-  
+
   // Test Show trait output (8-4-4-4-12 format)
   inspect(uuid1, content="7faa0293-7faa-3293-bfaa-02937faa0293")
-  
+
   // Test that Show output matches to_string output
   inspect(uuid1.to_string(), content="7faa0293-7faa-3293-bfaa-02937faa0293")
-  
+
   // Test with nil UUID
   let nil_uuid = nil()
   inspect(nil_uuid, content="00000000-0000-0000-0000-000000000000")
-  
+
   // Test with max UUID  
   let max_uuid = max()
   inspect(max_uuid, content="ffffffff-ffff-ffff-ffff-ffffffffffff")
-  
+
   // Test with a v4 UUID (deterministic seed)
   let v4_uuid = v4_with_rng(SimpleRng::new(12345L))
   inspect(v4_uuid, content="44d3167d-b8b7-4a01-acdb-7ec5603f92c9")
-  
+
   // Test format validation - should be exactly 8-4-4-4-12
   let format_test_uuid = Uuid::from_bytes(
-    b'\x01', b'\x23', b'\x45', b'\x67',  // 8 hex chars
-    b'\x89', b'\xAB',                    // 4 hex chars  
-    b'\xCD', b'\xEF',                    // 4 hex chars
-    b'\x01', b'\x23',                    // 4 hex chars
-    b'\x45', b'\x67', b'\x89', b'\xAB', b'\xCD', b'\xEF'  // 12 hex chars
+    b'\x01', b'\x23', b'\x45', b'\x67', // 8 hex chars
+     b'\x89', b'\xAB', // 4 hex chars  
+     b'\xCD', b'\xEF', // 4 hex chars
+     b'\x01', b'\x23', // 4 hex chars
+     b'\x45', b'\x67', b'\x89', b'\xAB', b'\xCD', b'\xEF', // 12 hex chars
   )
   inspect(format_test_uuid, content="01234567-89ab-cdef-0123-456789abcdef")
-  
+
   // Verify the string has correct length and format
   let format_string = format_test_uuid.to_string()
   inspect(format_string.length(), content="36") // 32 hex + 4 hyphens
@@ -47,12 +44,11 @@ test "uuid_show_implementation_snapshot" {
   inspect(format_string.get(18), content="Some(45)") // Third hyphen
   inspect(format_string.get(23), content="Some(45)") // Fourth hyphen
 }
+
+///|
 test "uuid_nil_snapshot" {
   let nil_uuid = nil()
-  inspect(
-    nil_uuid,
-    content="00000000-0000-0000-0000-000000000000",
-  )
+  inspect(nil_uuid, content="00000000-0000-0000-0000-000000000000")
   inspect(nil_uuid.to_string(), content="00000000-0000-0000-0000-000000000000")
   inspect(nil_uuid.is_nil(), content="true")
   inspect(nil_uuid.is_max(), content="false")
@@ -61,10 +57,7 @@ test "uuid_nil_snapshot" {
 ///|
 test "uuid_max_snapshot" {
   let max_uuid = max()
-  inspect(
-    max_uuid,
-    content="ffffffff-ffff-ffff-ffff-ffffffffffff",
-  )
+  inspect(max_uuid, content="ffffffff-ffff-ffff-ffff-ffffffffffff")
   inspect(max_uuid.to_string(), content="ffffffff-ffff-ffff-ffff-ffffffffffff")
   inspect(max_uuid.is_nil(), content="false")
   inspect(max_uuid.is_max(), content="true")

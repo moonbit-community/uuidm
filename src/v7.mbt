@@ -1,6 +1,7 @@
 /// UUID Version 7 (Time-ordered) implementation
 
-///| Get current Unix timestamp in milliseconds
+///|
+/// Get current Unix timestamp in milliseconds
 /// This is a simplified implementation - in practice you'd use system time
 fn current_timestamp_ms() -> Int64 {
   // Placeholder implementation - returns a fixed timestamp for demonstration
@@ -8,7 +9,8 @@ fn current_timestamp_ms() -> Int64 {
   1640995200000L // 2022-01-01 00:00:00 UTC in milliseconds
 }
 
-///| Generate a time-ordered UUID (version 7)
+///|
+/// Generate a time-ordered UUID (version 7)
 /// Format: 48-bit timestamp + 12-bit random + 2-bit variant + 62-bit random
 pub fn v7() -> Uuid {
   let timestamp = current_timestamp_ms()
@@ -37,7 +39,8 @@ pub fn v7() -> Uuid {
   Uuid::new(bytes)
 }
 
-///| Generate a time-ordered UUID with specific timestamp
+///|
+/// Generate a time-ordered UUID with specific timestamp
 pub fn v7_with_timestamp(timestamp_ms : Int64) -> Uuid {
   let random_bytes = random_bytes(10)
   let bytes : FixedArray[Byte] = FixedArray::make(16, b'\x00')
@@ -60,7 +63,8 @@ pub fn v7_with_timestamp(timestamp_ms : Int64) -> Uuid {
   Uuid::new(bytes)
 }
 
-///| Extract timestamp from a version 7 UUID
+///|
+/// Extract timestamp from a version 7 UUID
 pub fn extract_timestamp(uuid : Uuid) -> Int64? {
   match uuid.version() {
     Some(Version::V7) => {
@@ -77,7 +81,8 @@ pub fn extract_timestamp(uuid : Uuid) -> Int64? {
   }
 }
 
-///| Generate multiple time-ordered UUIDs ensuring monotonicity
+///|
+/// Generate multiple time-ordered UUIDs ensuring monotonicity
 pub fn v7_sequence(count : Int) -> Array[Uuid] {
   let base_timestamp = current_timestamp_ms()
   let result : Array[Uuid] = []

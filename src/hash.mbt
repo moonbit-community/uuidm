@@ -1,13 +1,15 @@
 /// Hashing utilities for name-based UUIDs (versions 3 and 5)
 
-///| Basic MD5 implementation for UUID v3
+///|
+/// Basic MD5 implementation for UUID v3
 /// This is a simplified implementation for demonstration
 struct Md5 {
   mut _h : FixedArray[UInt] // Prefixed with _ to indicate unused
   mut _length : Int64 // Prefixed with _ to indicate unused
 }
 
-///| Create a new MD5 hasher
+///|
+/// Create a new MD5 hasher
 pub fn Md5::new() -> Md5 {
   let h : FixedArray[UInt] = FixedArray::make(4, 0U)
   h[0] = 0x67452301U
@@ -17,7 +19,8 @@ pub fn Md5::new() -> Md5 {
   { _h: h, _length: 0L }
 }
 
-///| Simplified MD5 hash function
+///|
+/// Simplified MD5 hash function
 /// Note: This is a basic implementation for demonstration purposes
 /// In production, you would use a proper cryptographic library
 pub fn md5_hash(data : FixedArray[Byte]) -> FixedArray[Byte] {
@@ -43,7 +46,8 @@ pub fn md5_hash(data : FixedArray[Byte]) -> FixedArray[Byte] {
   result
 }
 
-///| Basic SHA-1 implementation for UUID v5
+///|
+/// Basic SHA-1 implementation for UUID v5
 /// This is a simplified implementation for demonstration
 pub fn sha1_hash(data : FixedArray[Byte]) -> FixedArray[Byte] {
   // This is a simplified placeholder implementation
@@ -89,11 +93,11 @@ pub fn sha1_hash(data : FixedArray[Byte]) -> FixedArray[Byte] {
   result
 }
 
-///| Convert a Unicode code point to UTF-8 bytes
+///|
+/// Convert a Unicode code point to UTF-8 bytes
 /// Returns the UTF-8 byte sequence for a given Unicode code point
 fn encode_utf8_codepoint(codepoint : Int) -> Array[Byte] {
   let bytes : Array[Byte] = []
-  
   if codepoint <= 0x7F {
     // 1-byte sequence: 0xxxxxxx
     bytes.push(codepoint.to_byte())
@@ -118,11 +122,11 @@ fn encode_utf8_codepoint(codepoint : Int) -> Array[Byte] {
     bytes.push(b'\xBF') // 0xBF
     bytes.push(b'\xBD') // 0xBD
   }
-  
   bytes
 }
 
-///| Convert string to UTF-8 bytes for hashing (RFC 4122/9562 compliant)
+///|
+/// Convert string to UTF-8 bytes for hashing (RFC 4122/9562 compliant)
 /// 
 /// ## UTF-8 Encoding Implementation
 /// 
@@ -152,29 +156,29 @@ fn encode_utf8_codepoint(codepoint : Int) -> Array[Byte] {
 /// same MD5/SHA-1 implementation).
 pub fn string_to_bytes(s : String) -> FixedArray[Byte] {
   let utf8_bytes : Array[Byte] = []
-  
+
   // Convert each character to its UTF-8 byte sequence
   for i = 0; i < s.length(); i = i + 1 {
-    let char = s[i]
-    let codepoint = char
+    let char = s.code_unit_at(i)
+    let codepoint = char.to_int()
     let char_bytes = encode_utf8_codepoint(codepoint)
-    
+
     // Add all bytes from this character to the result
     for j = 0; j < char_bytes.length(); j = j + 1 {
       utf8_bytes.push(char_bytes[j])
     }
   }
-  
+
   // Convert Array to FixedArray
   let result : FixedArray[Byte] = FixedArray::make(utf8_bytes.length(), b'\x00')
   for i = 0; i < utf8_bytes.length(); i = i + 1 {
     result[i] = utf8_bytes[i]
   }
-  
   result
 }
 
-///| Combine ns UUID and name for hashing
+///|
+/// Combine ns UUID and name for hashing
 pub fn combine_namespace_and_name(ns : Uuid, name : String) -> FixedArray[Byte] {
   let ns_bytes = ns.bytes()
   let name_bytes = string_to_bytes(name)
