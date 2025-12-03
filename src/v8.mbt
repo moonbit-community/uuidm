@@ -1,6 +1,7 @@
 /// UUID Version 8 (Custom) implementation
 
-///| Generate a custom UUID (version 8)
+///|
+/// Generate a custom UUID (version 8)
 /// The caller is responsible for providing the custom data
 pub fn v8(custom_data : FixedArray[Byte]) -> Uuid {
   if custom_data.length() != 16 {
@@ -18,7 +19,8 @@ pub fn v8(custom_data : FixedArray[Byte]) -> Uuid {
   Uuid::new(bytes)
 }
 
-///| Generate a custom UUID from a 128-bit integer
+///|
+/// Generate a custom UUID from a 128-bit integer
 pub fn v8_from_int128(high : Int64, low : Int64) -> Uuid {
   let bytes : FixedArray[Byte] = FixedArray::make(16, b'\x00')
 
@@ -37,7 +39,8 @@ pub fn v8_from_int128(high : Int64, low : Int64) -> Uuid {
   Uuid::new(bytes)
 }
 
-///| Generate a custom UUID with application-specific structure
+///|
+/// Generate a custom UUID with application-specific structure
 /// Example: counter-based UUID with specific formatting
 pub fn v8_counter(counter : Int64, node_id : Int, application_id : Int) -> Uuid {
   let bytes : FixedArray[Byte] = FixedArray::make(16, b'\x00')
@@ -62,7 +65,8 @@ pub fn v8_counter(counter : Int64, node_id : Int, application_id : Int) -> Uuid 
   Uuid::new(bytes)
 }
 
-///| Generate a custom UUID with mixed content (timestamp + random + custom)
+///|
+/// Generate a custom UUID with mixed content (timestamp + random + custom)
 pub fn v8_mixed(timestamp_ms : Int64, custom_suffix : Int) -> Uuid {
   let bytes : FixedArray[Byte] = FixedArray::make(16, b'\x00')
 
@@ -90,7 +94,8 @@ pub fn v8_mixed(timestamp_ms : Int64, custom_suffix : Int) -> Uuid {
   Uuid::new(bytes)
 }
 
-///| Extract custom data from a version 8 UUID (excluding version/variant bits)
+///|
+/// Extract custom data from a version 8 UUID (excluding version/variant bits)
 pub fn extract_custom_data(uuid : Uuid) -> FixedArray[Byte]? {
   match uuid.version() {
     Some(Version::V8) => {
