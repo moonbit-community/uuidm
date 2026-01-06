@@ -9,6 +9,7 @@ fn code_unit_at_option(s : String, idx : Int) -> UInt16? {
   }
 }
 
+///|
 test "uuid_show_implementation_snapshot" {
   // Test the Show trait implementation with specific byte patterns
   let uuid1 = Uuid::from_bytes(
