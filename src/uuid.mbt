@@ -29,7 +29,7 @@ enum Variant {
   Microsoft
   /// Reserved for future definition (0b111)
   Reserved
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// UUID version as defined in RFC 9562
@@ -50,7 +50,7 @@ enum Version {
   V7
   /// Version 8: Custom format
   V8
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// Create a new UUID from 16 bytes
@@ -195,4 +195,14 @@ pub fn Uuid::is_max(self : Uuid) -> Bool {
     }
   }
   true
+}
+
+///|
+pub impl Show for Variant with output(self, logger) {
+  logger.write_string(@debug.render(self.to_repr(), max_depth=2147483647))
+}
+
+///|
+pub impl Show for Version with output(self, logger) {
+  logger.write_string(@debug.render(self.to_repr(), max_depth=2147483647))
 }

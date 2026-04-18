@@ -4,7 +4,7 @@
 /// Test nil UUID
 test "nil_uuid" {
   let nil_uuid = nil()
-  if not(nil_uuid.is_nil()) {
+  if !nil_uuid.is_nil() {
     abort("nil UUID should be nil")
   }
   if nil_uuid.is_max() {
@@ -19,7 +19,7 @@ test "nil_uuid" {
 /// Test max UUID
 test "max_uuid" {
   let max_uuid = max()
-  if not(max_uuid.is_max()) {
+  if !max_uuid.is_max() {
     abort("max UUID should be max")
   }
   if max_uuid.is_nil() {

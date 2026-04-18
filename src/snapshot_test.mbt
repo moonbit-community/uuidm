@@ -39,10 +39,10 @@ test "uuid_show_implementation_snapshot" {
   // Verify the string has correct length and format
   let format_string = format_test_uuid.to_string()
   inspect(format_string.length(), content="36") // 32 hex + 4 hyphens
-  inspect(format_string.get(8), content="Some(45)") // First hyphen
-  inspect(format_string.get(13), content="Some(45)") // Second hyphen  
-  inspect(format_string.get(18), content="Some(45)") // Third hyphen
-  inspect(format_string.get(23), content="Some(45)") // Fourth hyphen
+  inspect(format_string.code_unit_at(8).to_int(), content="45") // First hyphen
+  inspect(format_string.code_unit_at(13).to_int(), content="45") // Second hyphen  
+  inspect(format_string.code_unit_at(18).to_int(), content="45") // Third hyphen
+  inspect(format_string.code_unit_at(23).to_int(), content="45") // Fourth hyphen
 }
 
 ///|
