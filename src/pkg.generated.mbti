@@ -1,6 +1,10 @@
 // Generated using `moon info`, DON'T EDIT IT
 package "bobzhang/uuidm"
 
+import {
+  "moonbitlang/core/debug",
+}
+
 // Values
 pub fn combine_namespace_and_name(Uuid, String) -> FixedArray[Byte]
 
@@ -93,7 +97,7 @@ pub fn SimpleRng::new_with_time() -> Self
 pub fn SimpleRng::next_byte(Self) -> Byte
 pub fn SimpleRng::next_int64(Self) -> Int64
 
-type Uuid
+type Uuid derive(Compare, Eq)
 pub fn Uuid::bytes(Self) -> FixedArray[Byte]
 pub fn Uuid::from_bytes(Byte, Byte, Byte, Byte, Byte, Byte, Byte, Byte, Byte, Byte, Byte, Byte, Byte, Byte, Byte, Byte) -> Self
 pub fn Uuid::is_max(Self) -> Bool
@@ -104,16 +108,12 @@ pub fn Uuid::to_string_simple(Self) -> String
 pub fn Uuid::to_urn(Self) -> String
 pub fn Uuid::variant(Self) -> Variant
 pub fn Uuid::version(Self) -> Version?
-pub impl Compare for Uuid
-pub impl Eq for Uuid
 pub impl Show for Uuid
 
-type Variant
-pub impl Eq for Variant
+type Variant derive(Eq, @debug.Debug)
 pub impl Show for Variant
 
-type Version
-pub impl Eq for Version
+type Version derive(Eq, @debug.Debug)
 pub impl Show for Version
 
 // Type aliases
