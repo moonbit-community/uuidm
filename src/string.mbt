@@ -124,7 +124,7 @@ pub fn Uuid::to_urn(self : Uuid) -> String {
 /// Parse UUID from URN string representation
 pub fn from_urn(s : String) -> Uuid? {
   if s.length() > 9 {
-    let uuid_part = s[9:].to_string() catch { _ => return None }
+    let uuid_part = s[9:].to_string()
     from_string(uuid_part)
   } else {
     None
