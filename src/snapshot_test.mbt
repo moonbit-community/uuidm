@@ -70,7 +70,7 @@ test "uuid_v4_format_snapshot" {
   let uuid = v4_with_rng(rng)
   inspect(uuid.to_string(), content="44d3167d-b8b7-4a01-acdb-7ec5603f92c9")
   inspect(uuid.variant(), content="Rfc9562")
-  inspect(uuid.version(), content="Some(V4)")
+  @debug.debug_inspect(uuid.version(), content="Some(V4)")
 }
 
 ///|
@@ -107,8 +107,8 @@ test "uuid_v3_vs_v5_snapshot" {
   inspect(v3_uuid.to_string(), content="a43879e1-a438-39e1-a438-79e1a43879e1")
   inspect(v5_uuid.to_string(), content="b44b89f7-7d91-57f9-bbec-51d8c0c5efd1")
   inspect(v3_uuid == v5_uuid, content="false")
-  inspect(v3_uuid.version(), content="Some(V3)")
-  inspect(v5_uuid.version(), content="Some(V5)")
+  @debug.debug_inspect(v3_uuid.version(), content="Some(V3)")
+  @debug.debug_inspect(v5_uuid.version(), content="Some(V5)")
 }
 
 ///|
@@ -117,8 +117,8 @@ test "uuid_v7_timestamp_snapshot" {
   let timestamp = 1640995200000L // 2022-01-01 00:00:00 UTC
   let uuid = v7_with_timestamp(timestamp)
   inspect(uuid.to_string(), content="017e12ef-9c00-76ed-a8a7-da711ccbae35")
-  inspect(extract_timestamp(uuid), content="Some(1640995200000)")
-  inspect(uuid.version(), content="Some(V7)")
+  @debug.debug_inspect(extract_timestamp(uuid), content="Some(1640995200000)")
+  @debug.debug_inspect(uuid.version(), content="Some(V7)")
 }
 
 ///|
@@ -127,7 +127,7 @@ test "uuid_v8_custom_snapshot" {
   let custom_data : FixedArray[Byte] = FixedArray::make(16, b'\x42')
   let uuid = v8(custom_data)
   inspect(uuid.to_string(), content="42424242-4242-8242-8242-424242424242")
-  inspect(uuid.version(), content="Some(V8)")
+  @debug.debug_inspect(uuid.version(), content="Some(V8)")
 }
 
 ///|
@@ -135,7 +135,7 @@ test "uuid_v8_counter_snapshot" {
   // Test v8 counter-based UUID
   let uuid = v8_counter(12345L, 999, 888)
   inspect(uuid.to_string(), content="00000000-0000-8039-8000-03e700000378")
-  inspect(uuid.version(), content="Some(V8)")
+  @debug.debug_inspect(uuid.version(), content="Some(V8)")
 }
 
 ///|
@@ -169,7 +169,7 @@ test "uuid_edge_cases_snapshot" {
   // v8 with different custom data sizes (should work with 16 bytes)
   let valid_custom : FixedArray[Byte] = FixedArray::make(16, b'\x00')
   let uuid = v8(valid_custom)
-  inspect(uuid.version(), content="Some(V8)")
+  @debug.debug_inspect(uuid.version(), content="Some(V8)")
 
   // Test version and variant extraction for different UUID types
   let v3_uuid = v3(ns_dns, "test")
@@ -191,7 +191,7 @@ test "uuid_v8_mixed_snapshot" {
   let custom_suffix = 0x123456
   let uuid = v8_mixed(timestamp, custom_suffix)
   inspect(uuid.to_string(), content="017e12ef-9c00-84a3-a6cd-345600123456")
-  inspect(uuid.version(), content="Some(V8)")
+  @debug.debug_inspect(uuid.version(), content="Some(V8)")
 }
 
 ///|

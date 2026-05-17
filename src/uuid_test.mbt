@@ -110,7 +110,7 @@ test "uuid_v3_generation" {
   inspect(uuid.to_string(), content="7faa0293-7faa-3293-bfaa-02937faa0293")
 
   // Verify version and variant
-  inspect(uuid.version(), content="Some(V3)")
+  @debug.debug_inspect(uuid.version(), content="Some(V3)")
   inspect(uuid.variant(), content="Rfc9562")
 }
 
@@ -133,9 +133,9 @@ test "uuid_v3_classic_domains" {
   }
 
   // All should have correct version and variant
-  inspect(google_uuid.version(), content="Some(V3)")
-  inspect(github_uuid.version(), content="Some(V3)")
-  inspect(stackoverflow_uuid.version(), content="Some(V3)")
+  @debug.debug_inspect(google_uuid.version(), content="Some(V3)")
+  @debug.debug_inspect(github_uuid.version(), content="Some(V3)")
+  @debug.debug_inspect(stackoverflow_uuid.version(), content="Some(V3)")
 }
 
 ///|
@@ -159,10 +159,10 @@ test "uuid_v3_different_namespaces" {
   }
 
   // All should have correct version
-  inspect(dns_uuid.version(), content="Some(V3)")
-  inspect(url_uuid.version(), content="Some(V3)")
-  inspect(oid_uuid.version(), content="Some(V3)")
-  inspect(x500_uuid.version(), content="Some(V3)")
+  @debug.debug_inspect(dns_uuid.version(), content="Some(V3)")
+  @debug.debug_inspect(url_uuid.version(), content="Some(V3)")
+  @debug.debug_inspect(oid_uuid.version(), content="Some(V3)")
+  @debug.debug_inspect(x500_uuid.version(), content="Some(V3)")
 }
 
 ///|
@@ -185,10 +185,10 @@ test "uuid_v3_unicode_strings" {
   }
 
   // All should have correct version
-  inspect(chinese_uuid.version(), content="Some(V3)")
-  inspect(emoji_uuid.version(), content="Some(V3)")
-  inspect(arabic_uuid.version(), content="Some(V3)")
-  inspect(japanese_uuid.version(), content="Some(V3)")
+  @debug.debug_inspect(chinese_uuid.version(), content="Some(V3)")
+  @debug.debug_inspect(emoji_uuid.version(), content="Some(V3)")
+  @debug.debug_inspect(arabic_uuid.version(), content="Some(V3)")
+  @debug.debug_inspect(japanese_uuid.version(), content="Some(V3)")
 
   // Should not be nil or max
   if chinese_uuid.is_nil() {
@@ -204,27 +204,27 @@ test "uuid_v3_unicode_strings" {
 test "uuid_v3_special_cases" {
   // Empty string
   let empty_uuid = v3(ns_dns, "")
-  inspect(empty_uuid.version(), content="Some(V3)")
+  @debug.debug_inspect(empty_uuid.version(), content="Some(V3)")
 
   // Very long string
   let long_name = "this.is.a.very.long.domain.name.that.exceeds.normal.length.but.should.still.work.properly.in.our.uuid.generation.system.example.com"
   let long_uuid = v3(ns_dns, long_name)
-  inspect(long_uuid.version(), content="Some(V3)")
+  @debug.debug_inspect(long_uuid.version(), content="Some(V3)")
 
   // String with special characters
   let special_uuid = v3(ns_dns, "test-with_special.chars@example.com")
-  inspect(special_uuid.version(), content="Some(V3)")
+  @debug.debug_inspect(special_uuid.version(), content="Some(V3)")
 
   // String with numbers
   let numeric_uuid = v3(ns_dns, "123.example.com")
-  inspect(numeric_uuid.version(), content="Some(V3)")
+  @debug.debug_inspect(numeric_uuid.version(), content="Some(V3)")
 
   // Mixed case (should be different from lowercase)
   let mixed_case_uuid = v3(ns_dns, "Example.Com")
   let lower_case_uuid = v3(ns_dns, "example.com")
   // Note: These might be the same in our simplified implementation
-  inspect(mixed_case_uuid.version(), content="Some(V3)")
-  inspect(lower_case_uuid.version(), content="Some(V3)")
+  @debug.debug_inspect(mixed_case_uuid.version(), content="Some(V3)")
+  @debug.debug_inspect(lower_case_uuid.version(), content="Some(V3)")
 }
 
 ///|
@@ -244,7 +244,7 @@ test "uuid_v5_classic_examples" {
   if example_v5 != example_v5_2 {
     abort("v5 UUIDs should be deterministic")
   }
-  inspect(example_v5.version(), content="Some(V5)")
+  @debug.debug_inspect(example_v5.version(), content="Some(V5)")
   inspect(example_v5.variant(), content="Rfc9562")
 }
 
@@ -265,7 +265,7 @@ test "uuid_v5_unicode_strings" {
   if unicode_v5 != unicode_v5_2 {
     abort("v5 Unicode UUIDs should be deterministic")
   }
-  inspect(unicode_v5.version(), content="Some(V5)")
+  @debug.debug_inspect(unicode_v5.version(), content="Some(V5)")
   inspect(unicode_v5.variant(), content="Rfc9562")
 }
 
@@ -294,11 +294,11 @@ test "uuid_chinese_characters_comprehensive" {
   inspect(simple_chinese != mixed_chinese, content="true")
 
   // All should have correct version and variant
-  inspect(simple_chinese.version(), content="Some(V3)")
-  inspect(complex_chinese.version(), content="Some(V3)")
-  inspect(mixed_chinese.version(), content="Some(V3)")
-  inspect(traditional_chinese.version(), content="Some(V3)")
-  inspect(numbers_chinese.version(), content="Some(V3)")
+  @debug.debug_inspect(simple_chinese.version(), content="Some(V3)")
+  @debug.debug_inspect(complex_chinese.version(), content="Some(V3)")
+  @debug.debug_inspect(mixed_chinese.version(), content="Some(V3)")
+  @debug.debug_inspect(traditional_chinese.version(), content="Some(V3)")
+  @debug.debug_inspect(numbers_chinese.version(), content="Some(V3)")
   inspect(simple_chinese.variant(), content="Rfc9562")
   inspect(complex_chinese.variant(), content="Rfc9562")
   inspect(mixed_chinese.variant(), content="Rfc9562")
@@ -333,10 +333,10 @@ test "uuid_chinese_different_namespaces" {
   }
 
   // All should have correct version
-  inspect(dns_uuid.version(), content="Some(V3)")
-  inspect(url_uuid.version(), content="Some(V3)")
-  inspect(oid_uuid.version(), content="Some(V3)")
-  inspect(x500_uuid.version(), content="Some(V3)")
+  @debug.debug_inspect(dns_uuid.version(), content="Some(V3)")
+  @debug.debug_inspect(url_uuid.version(), content="Some(V3)")
+  @debug.debug_inspect(oid_uuid.version(), content="Some(V3)")
+  @debug.debug_inspect(x500_uuid.version(), content="Some(V3)")
 }
 
 ///|
@@ -358,8 +358,8 @@ test "uuid_chinese_encoding_test" {
   // Generate UUIDs and verify they're valid
   let ascii_uuid = v3(ns_dns, simple_ascii)
   let chinese_uuid = v3(ns_dns, chinese_chars)
-  inspect(ascii_uuid.version(), content="Some(V3)")
-  inspect(chinese_uuid.version(), content="Some(V3)")
+  @debug.debug_inspect(ascii_uuid.version(), content="Some(V3)")
+  @debug.debug_inspect(chinese_uuid.version(), content="Some(V3)")
 
   // They should be different
   if ascii_uuid == chinese_uuid {
@@ -403,7 +403,7 @@ test "uuid_chinese_utf8_compliance" {
     }
 
     // Should have correct version and variant
-    inspect(uuid1.version(), content="Some(V3)")
+    @debug.debug_inspect(uuid1.version(), content="Some(V3)")
     inspect(uuid1.variant(), content="Rfc9562")
   }
 }
@@ -435,8 +435,8 @@ test "uuid_mixed_chinese_ascii_compliance" {
     }
 
     // Should have correct version and variant
-    inspect(dns_uuid.version(), content="Some(V3)")
-    inspect(url_uuid.version(), content="Some(V3)")
+    @debug.debug_inspect(dns_uuid.version(), content="Some(V3)")
+    @debug.debug_inspect(url_uuid.version(), content="Some(V3)")
     inspect(dns_uuid.variant(), content="Rfc9562")
     inspect(url_uuid.variant(), content="Rfc9562")
   }
@@ -474,7 +474,7 @@ test "uuid_chinese_reference_comparison" {
   )
 
   // Version should be 3
-  inspect(uuid.version(), content="Some(V3)")
+  @debug.debug_inspect(uuid.version(), content="Some(V3)")
   inspect(uuid.variant(), content="Rfc9562")
 
   // Should not be nil or max
@@ -487,7 +487,7 @@ test "uuid_chinese_reference_comparison" {
 
   // Test with v5 as well
   let uuid_v5 = v5(ns_dns, test_text)
-  inspect(uuid_v5.version(), content="Some(V5)")
+  @debug.debug_inspect(uuid_v5.version(), content="Some(V5)")
   inspect(uuid_v5.variant(), content="Rfc9562")
 
   // v3 and v5 should be different
@@ -520,8 +520,8 @@ test "uuid_v5_chinese_comprehensive" {
   }
 
   // All should have correct version
-  inspect(simple_chinese_v5.version(), content="Some(V5)")
-  inspect(complex_chinese_v5.version(), content="Some(V5)")
+  @debug.debug_inspect(simple_chinese_v5.version(), content="Some(V5)")
+  @debug.debug_inspect(complex_chinese_v5.version(), content="Some(V5)")
   inspect(simple_chinese_v5.variant(), content="Rfc9562")
   inspect(complex_chinese_v5.variant(), content="Rfc9562")
 }
@@ -546,8 +546,8 @@ test "uuid_chinese_diagnostic" {
   let chinese_uuid = v3(ns_dns, chinese_text)
 
   // Both should be valid UUIDs
-  inspect(ascii_uuid.version(), content="Some(V3)")
-  inspect(chinese_uuid.version(), content="Some(V3)")
+  @debug.debug_inspect(ascii_uuid.version(), content="Some(V3)")
+  @debug.debug_inspect(chinese_uuid.version(), content="Some(V3)")
   inspect(ascii_uuid.variant(), content="Rfc9562")
   inspect(chinese_uuid.variant(), content="Rfc9562")
 
@@ -559,7 +559,7 @@ test "uuid_chinese_diagnostic" {
   // Test with a known Chinese domain-like string
   let chinese_domain = "中文.com"
   let chinese_domain_uuid = v3(ns_dns, chinese_domain)
-  inspect(chinese_domain_uuid.version(), content="Some(V3)")
+  @debug.debug_inspect(chinese_domain_uuid.version(), content="Some(V3)")
   inspect(chinese_domain_uuid.variant(), content="Rfc9562")
 
   // Should be deterministic
@@ -584,13 +584,13 @@ test "uuid_chinese_reference_spec_compliance" {
   let china_uuid = v3(ns_dns, china)
 
   // Document what we get with our current implementation
-  inspect(china_uuid.version(), content="Some(V3)")
+  @debug.debug_inspect(china_uuid.version(), content="Some(V3)")
   inspect(china_uuid.variant(), content="Rfc9562")
 
   // Test case 2: Mixed Chinese and ASCII (common in domain names)
   let mixed_domain = "中文.example.com"
   let mixed_uuid = v3(ns_dns, mixed_domain)
-  inspect(mixed_uuid.version(), content="Some(V3)")
+  @debug.debug_inspect(mixed_uuid.version(), content="Some(V3)")
   inspect(mixed_uuid.variant(), content="Rfc9562")
 
   // Test case 3: Compare with what a proper UTF-8 implementation should produce
@@ -614,7 +614,7 @@ test "uuid_chinese_reference_spec_compliance" {
 
   // Test with v5 as well
   let china_v5 = v5(ns_dns, china)
-  inspect(china_v5.version(), content="Some(V5)")
+  @debug.debug_inspect(china_v5.version(), content="Some(V5)")
   if china_uuid == china_v5 {
     abort("v3 and v5 should produce different UUIDs")
   }
@@ -640,7 +640,7 @@ test "uuid_chinese_encoding_implications" {
 
     // Our implementation uses character count, not UTF-8 byte count
     // This will produce different results than spec-compliant implementations
-    inspect(uuid.version(), content="Some(V3)")
+    @debug.debug_inspect(uuid.version(), content="Some(V3)")
     inspect(uuid.variant(), content="Rfc9562")
 
     // But it should be deterministic
@@ -689,7 +689,7 @@ test "uuid_chinese_javascript_comparison" {
   )
 
   // Version and variant should be correct
-  inspect(our_uuid.version(), content="Some(V3)")
+  @debug.debug_inspect(our_uuid.version(), content="Some(V3)")
   inspect(our_uuid.variant(), content="Rfc9562")
 
   // The actual UUID value will differ from JavaScript implementations
@@ -720,7 +720,7 @@ test "uuid_javascript_reference_values" {
   let ascii_uuid = v3(ns_dns, ascii_text)
 
   // Should have correct structure
-  inspect(ascii_uuid.version(), content="Some(V3)")
+  @debug.debug_inspect(ascii_uuid.version(), content="Some(V3)")
   inspect(ascii_uuid.variant(), content="Rfc9562")
 
   // Test UTF-8 encoding with Chinese characters
@@ -728,7 +728,7 @@ test "uuid_javascript_reference_values" {
   let chinese_uuid = v3(ns_dns, chinese_text)
 
   // Should have correct structure
-  inspect(chinese_uuid.version(), content="Some(V3)")
+  @debug.debug_inspect(chinese_uuid.version(), content="Some(V3)")
   inspect(chinese_uuid.variant(), content="Rfc9562")
 
   // The actual UUID values will still differ due to our simplified hash,
@@ -775,7 +775,7 @@ test "uuid_utf8_byte_verification" {
   let ascii_uuid = v3(ns_dns, "A")
   let latin_uuid = v3(ns_dns, "é")
   let chinese_uuid = v3(ns_dns, "中")
-  inspect(ascii_uuid.version(), content="Some(V3)")
-  inspect(latin_uuid.version(), content="Some(V3)")
-  inspect(chinese_uuid.version(), content="Some(V3)")
+  @debug.debug_inspect(ascii_uuid.version(), content="Some(V3)")
+  @debug.debug_inspect(latin_uuid.version(), content="Some(V3)")
+  @debug.debug_inspect(chinese_uuid.version(), content="Some(V3)")
 }
