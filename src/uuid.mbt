@@ -14,7 +14,7 @@ struct Uuid(FixedArray[Byte]) derive(Eq, Compare)
 /// let uuid = Uuid::from_bytes(b'\x7F', b'\xAA', b'\x02', b'\x93', b'\x7F', b'\xAA', b'\x32', b'\x93', b'\xBF', b'\xAA', b'\x02', b'\x93', b'\x7F', b'\xAA', b'\x02', b'\x93')
 /// inspect(uuid, content="7faa0293-7faa-3293-bfaa-02937faa0293")
 /// ```
-pub impl Show for Uuid with output(self, logger) {
+pub impl Show for Uuid with fn output(self, logger) {
   logger.write_string(self.to_string())
 }
 
@@ -198,11 +198,11 @@ pub fn Uuid::is_max(self : Uuid) -> Bool {
 }
 
 ///|
-pub impl Show for Variant with output(self, logger) {
+pub impl Show for Variant with fn output(self, logger) {
   logger.write_string(@debug.render(self.to_repr(), max_depth=2147483647))
 }
 
 ///|
-pub impl Show for Version with output(self, logger) {
+pub impl Show for Version with fn output(self, logger) {
   logger.write_string(@debug.render(self.to_repr(), max_depth=2147483647))
 }
