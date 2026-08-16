@@ -8,6 +8,12 @@
 struct Uuid(FixedArray[Byte]) derive(Eq, Compare)
 
 ///|
+pub extend Uuid with Eq::{not_equal, equal}
+
+///|
+pub extend Uuid with Compare::{op_lt, op_le, op_ge, compare, op_gt}
+
+///|
 /// Show the UUID as a string which conforms to the UUID format (8-4-4-4-12) 
 /// # Example
 /// ```
@@ -17,6 +23,9 @@ struct Uuid(FixedArray[Byte]) derive(Eq, Compare)
 pub impl Show for Uuid with fn output(self, logger) {
   logger.write_string(self.to_string())
 }
+
+///|
+pub extend Uuid with Show::{output}
 
 ///|
 /// UUID variant as defined in RFC 9562
@@ -30,6 +39,12 @@ enum Variant {
   /// Reserved for future definition (0b111)
   Reserved
 } derive(Eq, Debug)
+
+///|
+pub extend Variant with Eq::{not_equal, equal}
+
+///|
+pub extend Variant with Debug::{to_repr}
 
 ///|
 /// UUID version as defined in RFC 9562
@@ -51,6 +66,12 @@ enum Version {
   /// Version 8: Custom format
   V8
 } derive(Eq, Debug)
+
+///|
+pub extend Version with Eq::{not_equal, equal}
+
+///|
+pub extend Version with Debug::{to_repr}
 
 ///|
 /// Create a new UUID from 16 bytes
@@ -203,6 +224,12 @@ pub impl Show for Variant with fn output(self, logger) {
 }
 
 ///|
+pub extend Variant with Show::{to_string, output}
+
+///|
 pub impl Show for Version with fn output(self, logger) {
   logger.write_string(@debug.render(self.to_repr(), max_depth=2147483647))
 }
+
+///|
+pub extend Version with Show::{to_string, output}
