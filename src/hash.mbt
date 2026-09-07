@@ -16,7 +16,7 @@ pub fn Md5::new() -> Md5 {
   h[1] = 0xEFCDAB89U
   h[2] = 0x98BADCFEU
   h[3] = 0x10325476U
-  { _h: h, _length: 0L }
+  { _h: h, _length: 0L, }
 }
 
 ///|
