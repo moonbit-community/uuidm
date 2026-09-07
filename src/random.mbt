@@ -11,7 +11,7 @@ struct SimpleRng {
 ///|
 /// Create a new random number generator with a seed
 pub fn SimpleRng::new(seed : Int64) -> SimpleRng {
-  { state: seed }
+  { state: seed, }
 }
 
 ///|
@@ -20,7 +20,7 @@ pub fn SimpleRng::new_with_time() -> SimpleRng {
   // Use a simple time-based seed (this is basic implementation)
   // In a real implementation, you'd use system time or entropy
   // For demonstration, we use a different seed each time by using different base values
-  { state: 1664525L }
+  { state: 1664525L, }
 }
 
 ///|

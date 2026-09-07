@@ -8,6 +8,16 @@
 struct Uuid(FixedArray[Byte]) derive(Eq, Compare)
 
 ///|
+/// Keep `Eq` usable through dot syntax on `Uuid` (previously provided by the
+/// deprecated implicit `impl` promotion).
+pub extend Uuid with Eq::{not_equal, equal}
+
+///|
+/// Keep `Compare` usable through dot syntax on `Uuid` (previously provided by
+/// the deprecated implicit `impl` promotion).
+pub extend Uuid with Compare::{op_lt, op_le, op_ge, compare, op_gt}
+
+///|
 /// Show the UUID as a string which conforms to the UUID format (8-4-4-4-12) 
 /// # Example
 /// ```
@@ -17,6 +27,11 @@ struct Uuid(FixedArray[Byte]) derive(Eq, Compare)
 pub impl Show for Uuid with fn output(self, logger) {
   logger.write_string(self.to_string())
 }
+
+///|
+/// Keep `Show::output` usable through dot syntax on `Uuid` (previously provided
+/// by the deprecated implicit `impl` promotion).
+pub extend Uuid with Show::{output}
 
 ///|
 /// UUID variant as defined in RFC 9562
@@ -30,6 +45,16 @@ enum Variant {
   /// Reserved for future definition (0b111)
   Reserved
 } derive(Eq, Debug)
+
+///|
+/// Keep `Eq` usable through dot syntax on `Variant` (previously provided by the
+/// deprecated implicit `impl` promotion).
+pub extend Variant with Eq::{not_equal, equal}
+
+///|
+/// Keep `Debug::to_repr` usable through dot syntax on `Variant` (previously
+/// provided by the deprecated implicit `impl` promotion).
+pub extend Variant with @debug.Debug::{to_repr}
 
 ///|
 /// UUID version as defined in RFC 9562
@@ -51,6 +76,16 @@ enum Version {
   /// Version 8: Custom format
   V8
 } derive(Eq, Debug)
+
+///|
+/// Keep `Eq` usable through dot syntax on `Version` (previously provided by the
+/// deprecated implicit `impl` promotion).
+pub extend Version with Eq::{not_equal, equal}
+
+///|
+/// Keep `Debug::to_repr` usable through dot syntax on `Version` (previously
+/// provided by the deprecated implicit `impl` promotion).
+pub extend Version with @debug.Debug::{to_repr}
 
 ///|
 /// Create a new UUID from 16 bytes
@@ -203,6 +238,16 @@ pub impl Show for Variant with fn output(self, logger) {
 }
 
 ///|
+/// Keep `Show` usable through dot syntax on `Variant` (previously provided by
+/// the deprecated implicit `impl` promotion).
+pub extend Variant with Show::{to_string, output}
+
+///|
 pub impl Show for Version with fn output(self, logger) {
   logger.write_string(@debug.render(self.to_repr(), max_depth=2147483647))
 }
+
+///|
+/// Keep `Show` usable through dot syntax on `Version` (previously provided by
+/// the deprecated implicit `impl` promotion).
+pub extend Version with Show::{to_string, output}
