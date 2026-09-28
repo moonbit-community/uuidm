@@ -24,7 +24,7 @@ test "uuid_show_implementation_snapshot" {
 
   // Test with a v4 UUID (deterministic seed)
   let v4_uuid = @uuidm.v4_with_rng(@uuidm.SimpleRng::new(12345L))
-  inspect(v4_uuid, content="44d3167d-b8b7-4a01-acdb-7ec5603f92c9")
+  inspect(v4_uuid, content="05ea7ad2-d7fa-4d55-b510-d927367c4996")
 
   // Test format validation - should be exactly 8-4-4-4-12
   let format_test_uuid = @uuidm.Uuid::from_bytes(
@@ -68,7 +68,7 @@ test "uuid_v4_format_snapshot" {
   // Test with a specific seed for deterministic output
   let rng = @uuidm.SimpleRng::new(12345L)
   let uuid = @uuidm.v4_with_rng(rng)
-  inspect(uuid.to_string(), content="44d3167d-b8b7-4a01-acdb-7ec5603f92c9")
+  inspect(uuid.to_string(), content="05ea7ad2-d7fa-4d55-b510-d927367c4996")
   inspect(uuid.variant(), content="Rfc9562")
   @debug.debug_inspect(uuid.version(), content="Some(V4)")
 }
@@ -79,9 +79,9 @@ test "uuid_v3_deterministic_snapshot" {
   let uuid1 = @uuidm.v3(@uuidm.ns_dns, "example.com")
   let uuid2 = @uuidm.v3(@uuidm.ns_dns, "example.com")
   let uuid3 = @uuidm.v3(@uuidm.ns_dns, "different.com")
-  inspect(uuid1.to_string(), content="7faa0293-7faa-3293-bfaa-02937faa0293")
-  inspect(uuid2.to_string(), content="7faa0293-7faa-3293-bfaa-02937faa0293")
-  inspect(uuid3.to_string(), content="f9b170c9-f9b1-30c9-b9b1-70c9f9b170c9")
+  inspect(uuid1.to_string(), content="9073926b-929f-31c2-abc9-fad77ae3e8eb")
+  inspect(uuid2.to_string(), content="9073926b-929f-31c2-abc9-fad77ae3e8eb")
+  inspect(uuid3.to_string(), content="da0c44df-fd33-391f-a045-310cc70e5468")
   inspect(uuid1 == uuid2, content="true")
   inspect(uuid1 == uuid3, content="false")
 }
@@ -92,9 +92,9 @@ test "uuid_v5_deterministic_snapshot" {
   let uuid1 = @uuidm.v5(@uuidm.ns_dns, "example.com")
   let uuid2 = @uuidm.v5(@uuidm.ns_dns, "example.com")
   let uuid3 = @uuidm.v5(@uuidm.ns_dns, "different.com")
-  inspect(uuid1.to_string(), content="22da5676-178f-5547-9535-a695c3e40735")
-  inspect(uuid2.to_string(), content="22da5676-178f-5547-9535-a695c3e40735")
-  inspect(uuid3.to_string(), content="2fc4e01f-5165-594e-bffd-93c6e9d26d1d")
+  inspect(uuid1.to_string(), content="cfbff0d1-9375-5685-968c-48ce8b15ae17")
+  inspect(uuid2.to_string(), content="cfbff0d1-9375-5685-968c-48ce8b15ae17")
+  inspect(uuid3.to_string(), content="b699aea5-0c48-5ecd-8f12-3254f637c95c")
   inspect(uuid1 == uuid2, content="true")
   inspect(uuid1 == uuid3, content="false")
 }
@@ -104,8 +104,8 @@ test "uuid_v3_vs_v5_snapshot" {
   // v3 and v5 should produce different UUIDs for same input
   let v3_uuid = @uuidm.v3(@uuidm.ns_dns, "test.example.com")
   let v5_uuid = @uuidm.v5(@uuidm.ns_dns, "test.example.com")
-  inspect(v3_uuid.to_string(), content="a43879e1-a438-39e1-a438-79e1a43879e1")
-  inspect(v5_uuid.to_string(), content="b44b89f7-7d91-57f9-bbec-51d8c0c5efd1")
+  inspect(v3_uuid.to_string(), content="511440b3-a9c4-30f2-89a1-8de81e5f58b4")
+  inspect(v5_uuid.to_string(), content="d0408231-0d06-54fb-ba49-a4a898f0d898")
   inspect(v3_uuid == v5_uuid, content="false")
   @debug.debug_inspect(v3_uuid.version(), content="Some(V3)")
   @debug.debug_inspect(v5_uuid.version(), content="Some(V5)")
@@ -116,7 +116,9 @@ test "uuid_v7_timestamp_snapshot" {
   // Test v7 with specific timestamp for deterministic output
   let timestamp = 1640995200000L // 2022-01-01 00:00:00 UTC
   let uuid = @uuidm.v7_with_timestamp(timestamp)
-  inspect(uuid.to_string(), content="017e12ef-9c00-76ed-a8a7-da711ccbae35")
+  // The timestamp fills octets 0-5; octets 6-15 are random (apart from the
+  // version / variant bits)
+  inspect(uuid.to_string()[0:15], content="017e12ef-9c00-7")
   @debug.debug_inspect(
     @uuidm.extract_timestamp(uuid),
     content="Some(1640995200000)",
@@ -170,10 +172,10 @@ test "uuid_namespaces_snapshot" {
 ///|
 test "uuid_string_formats_snapshot" {
   let uuid = @uuidm.v4_with_rng(@uuidm.SimpleRng::new(54321L)) // Deterministic for testing
-  inspect(uuid.to_string(), content="dc8b6ef5-d0ef-42f9-8493-d63d78776ac1")
+  inspect(uuid.to_string(), content="15a1a79c-0734-425d-b7ac-6eb99b9d693b")
   inspect(
     uuid.to_urn(),
-    content="urn:uuid:dc8b6ef5-d0ef-42f9-8493-d63d78776ac1",
+    content="urn:uuid:15a1a79c-0734-425d-b7ac-6eb99b9d693b",
   )
 }
 
@@ -205,7 +207,10 @@ test "uuid_v8_mixed_snapshot" {
   let timestamp = 1640995200000L
   let custom_suffix = 0x123456
   let uuid = @uuidm.v8_mixed(timestamp, custom_suffix)
-  inspect(uuid.to_string(), content="017e12ef-9c00-84a3-a6cd-345600123456")
+  // Octets 6-9 are random (apart from the version / variant bits)
+  let s = uuid.to_string()
+  inspect(s[0:15], content="017e12ef-9c00-8")
+  inspect(s[24:36], content="000000123456")
   @debug.debug_inspect(uuid.version(), content="Some(V8)")
 }
 
@@ -235,8 +240,8 @@ test "random_generation_snapshot" {
   inspect(bytes2.length(), content="8")
   inspect(bytes3.length(), content="16")
 
-  // Different calls should produce different results (due to different seeds)
-  inspect(bytes1 == bytes2, content="true")
+  // Different calls should produce different results
+  inspect(bytes1 == bytes2, content="false")
 }
 
 ///|
@@ -256,14 +261,12 @@ test "uuid_from_bytes_snapshot" {
 test "demo_function_snapshot" {
   // Test the demo function output
   let demo_output = @uuidm.demo()
-  inspect(
-    demo_output,
-    content=(
-      #|UUID v4: 38372a81-ec5b-4e45-a0bf-12491463668d
-      #|UUID v7: 017e12ef-9c00-76ed-a8a7-da711ccbae35
-      #|Nil UUID: 00000000-0000-0000-0000-000000000000
-    ),
-  )
+  // The v4 / v7 values are random; check the layout only.
+  let lines = demo_output.split("\n").map(l => l.to_owned()).collect()
+  inspect(lines.length(), content="3")
+  inspect(lines[0].has_prefix("UUID v4: "), content="true")
+  inspect(lines[1].has_prefix("UUID v7: 017e12ef-9c00-7"), content="true")
+  inspect(lines[2], content="Nil UUID: 00000000-0000-0000-0000-000000000000")
 
   // The demo should include UUID examples
   inspect(demo_output.length() > 50, content="true")

@@ -82,24 +82,47 @@ pub fn Uuid::to_string_simple(self : Uuid) -> String {
 }
 
 ///|
-/// Parse UUID from string representation
-/// Accepts both hyphenated and non-hyphenated formats
-pub fn from_string(s : String) -> Uuid? {
-  // Remove hyphens and convert to lowercase 
-  let cleaned = s
+/// Value of an ASCII hexadecimal digit given as a UTF-16 code unit, or -1.
+fn hex_digit_value(code : Int) -> Int {
+  if code >= '0'.to_int() && code <= '9'.to_int() {
+    code - '0'.to_int()
+  } else if code >= 'a'.to_int() && code <= 'f'.to_int() {
+    code - 'a'.to_int() + 10
+  } else if code >= 'A'.to_int() && code <= 'F'.to_int() {
+    code - 'A'.to_int() + 10
+  } else {
+    -1
+  }
+}
 
+///|
+/// Parse UUID from string representation
+/// Accepts both hyphenated (`xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`) and
+/// non-hyphenated (32 hex digits) formats; hex digits may be in either case.
+/// Returns `None` for anything else.
+pub fn from_string(s : String) -> Uuid? {
   // Must be exactly 32 hex characters (without hyphens) or 36 (with hyphens)
-  if cleaned.length() != 32 && cleaned.length() != 36 {
+  let hyphenated = s.length() == 36
+  if s.length() != 32 && !hyphenated {
     return None
   }
-
-  // Convert each pair of hex characters to bytes
   let bytes : FixedArray[Byte] = FixedArray::make(16, b'\x00')
-
-  // Simple parsing - for now just create a UUID from the string length
-  // This is a placeholder implementation
+  let mut pos = 0
   for i = 0; i < 16; i = i + 1 {
-    bytes[i] = ((cleaned.length() + i) % 256).to_byte()
+    // Hyphens come before octets 4, 6, 8 and 10 (8-4-4-4-12 layout)
+    if hyphenated && (i == 4 || i == 6 || i == 8 || i == 10) {
+      if s.code_unit_at(pos).to_int() != '-'.to_int() {
+        return None
+      }
+      pos = pos + 1
+    }
+    let high = hex_digit_value(s.code_unit_at(pos).to_int())
+    let low = hex_digit_value(s.code_unit_at(pos + 1).to_int())
+    if high < 0 || low < 0 {
+      return None
+    }
+    bytes[i] = ((high << 4) | low).to_byte()
+    pos = pos + 2
   }
   Some(Uuid::new(bytes))
 }
@@ -122,13 +145,26 @@ pub fn Uuid::to_urn(self : Uuid) -> String {
 
 ///|
 /// Parse UUID from URN string representation
+/// The `urn:uuid:` prefix is required (matched case-insensitively) and must be
+/// followed by a string accepted by `from_string`.
 pub fn from_urn(s : String) -> Uuid? {
-  if s.length() > 9 {
-    let uuid_part = s[9:].to_owned()
-    from_string(uuid_part)
-  } else {
-    None
+  let prefix = "urn:uuid:"
+  if s.length() <= prefix.length() {
+    return None
   }
+  for i = 0; i < prefix.length(); i = i + 1 {
+    let code = s.code_unit_at(i).to_int()
+    let lower = if code >= 'A'.to_int() && code <= 'Z'.to_int() {
+      code + 32
+    } else {
+      code
+    }
+    if lower != prefix.code_unit_at(i).to_int() {
+      return None
+    }
+  }
+  // The prefix is ASCII, so offset 9 is a character boundary.
+  from_string(s[prefix.length():].to_owned())
 }
 
 ///|

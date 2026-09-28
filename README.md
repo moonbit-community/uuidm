@@ -195,7 +195,7 @@ moon test
 
 ## Implementation Notes
 
-- **Cryptographic hashing**: The MD5 and SHA-1 implementations are simplified for demonstration. In production, you may want to use proper cryptographic libraries.
+- **Hashing**: MD5 (RFC 1321) and SHA-1 (FIPS 180-4) are implemented in pure MoonBit for name-based UUIDs, so v3 / v5 values match other RFC 9562 implementations. Both are broken as general-purpose cryptographic hashes; don't use `md5_hash` / `sha1_hash` for security.
 - **Random number generation**: Uses a simple linear congruential generator. For cryptographic applications, consider using a cryptographically secure random number generator.
 - **Performance**: This implementation prioritizes clarity and correctness over performance optimization.
 
