@@ -24,7 +24,7 @@ test "uuid_show_implementation_snapshot" {
 
   // Test with a v4 UUID (deterministic seed)
   let v4_uuid = @uuidm.v4_with_rng(@uuidm.SimpleRng::new(12345L))
-  inspect(v4_uuid, content="44d3167d-b8b7-4a01-acdb-7ec5603f92c9")
+  inspect(v4_uuid, content="05ea7ad2-d7fa-4d55-b510-d927367c4996")
 
   // Test format validation - should be exactly 8-4-4-4-12
   let format_test_uuid = @uuidm.Uuid::from_bytes(
@@ -68,7 +68,7 @@ test "uuid_v4_format_snapshot" {
   // Test with a specific seed for deterministic output
   let rng = @uuidm.SimpleRng::new(12345L)
   let uuid = @uuidm.v4_with_rng(rng)
-  inspect(uuid.to_string(), content="44d3167d-b8b7-4a01-acdb-7ec5603f92c9")
+  inspect(uuid.to_string(), content="05ea7ad2-d7fa-4d55-b510-d927367c4996")
   inspect(uuid.variant(), content="Rfc9562")
   @debug.debug_inspect(uuid.version(), content="Some(V4)")
 }
@@ -116,7 +116,7 @@ test "uuid_v7_timestamp_snapshot" {
   // Test v7 with specific timestamp for deterministic output
   let timestamp = 1640995200000L // 2022-01-01 00:00:00 UTC
   let uuid = @uuidm.v7_with_timestamp(timestamp)
-  inspect(uuid.to_string(), content="017e12ef-9c00-76ed-a8a7-da711ccbae35")
+  inspect(uuid.to_string(), content="017e12ef-9c00-7718-9e73-b4443363dd16")
   @debug.debug_inspect(
     @uuidm.extract_timestamp(uuid),
     content="Some(1640995200000)",
@@ -170,10 +170,10 @@ test "uuid_namespaces_snapshot" {
 ///|
 test "uuid_string_formats_snapshot" {
   let uuid = @uuidm.v4_with_rng(@uuidm.SimpleRng::new(54321L)) // Deterministic for testing
-  inspect(uuid.to_string(), content="dc8b6ef5-d0ef-42f9-8493-d63d78776ac1")
+  inspect(uuid.to_string(), content="15a1a79c-0734-425d-b7ac-6eb99b9d693b")
   inspect(
     uuid.to_urn(),
-    content="urn:uuid:dc8b6ef5-d0ef-42f9-8493-d63d78776ac1",
+    content="urn:uuid:15a1a79c-0734-425d-b7ac-6eb99b9d693b",
   )
 }
 
@@ -205,7 +205,7 @@ test "uuid_v8_mixed_snapshot" {
   let timestamp = 1640995200000L
   let custom_suffix = 0x123456
   let uuid = @uuidm.v8_mixed(timestamp, custom_suffix)
-  inspect(uuid.to_string(), content="017e12ef-9c00-84a3-a6cd-000000123456")
+  inspect(uuid.to_string(), content="017e12ef-9c00-89e7-ab2f-000000123456")
   @debug.debug_inspect(uuid.version(), content="Some(V8)")
 }
 
@@ -259,8 +259,8 @@ test "demo_function_snapshot" {
   inspect(
     demo_output,
     content=(
-      #|UUID v4: 38372a81-ec5b-4e45-a0bf-12491463668d
-      #|UUID v7: 017e12ef-9c00-76ed-a8a7-da711ccbae35
+      #|UUID v4: 5649d1b7-f91e-456d-b39f-745a3d840e96
+      #|UUID v7: 017e12ef-9c00-7718-9e73-b4443363dd16
       #|Nil UUID: 00000000-0000-0000-0000-000000000000
     ),
   )

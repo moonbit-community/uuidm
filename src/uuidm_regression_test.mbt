@@ -109,3 +109,17 @@ test "regression: Uuid does not share its bytes with callers" {
   out[0] = b'\x00'
   inspect(@uuidm.ns_dns, content="6ba7b810-9dad-11d1-80b4-00c04fd430c8")
 }
+
+///|
+test "regression: v4_with_rng does not cycle every 16 UUIDs" {
+  // Found by "qc: v4_with_rng never repeats a UUID within 256 draws"
+  // (counterexample: seed 0): `next_byte` returned the low byte of a
+  // mod-2^64 LCG, which has period 256, so the 17th UUID equalled the 1st.
+  let rng = @uuidm.SimpleRng::new(0L)
+  let first = @uuidm.v4_with_rng(rng)
+  for _ in 1..<16 {
+    ignore(@uuidm.v4_with_rng(rng))
+  }
+  let seventeenth = @uuidm.v4_with_rng(rng)
+  inspect(first == seventeenth, content="false")
+}

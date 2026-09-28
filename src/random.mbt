@@ -36,7 +36,11 @@ pub fn SimpleRng::next_int64(self : SimpleRng) -> Int64 {
 /// Generate a random byte
 pub fn SimpleRng::next_byte(self : SimpleRng) -> Byte {
   let rand = self.next_int64()
-  rand.land(0xFFL).to_int().to_byte()
+  // Use bits 32-39: in an LCG modulo 2^64 bit k only has period 2^(k+1), so
+  // the low byte would repeat every 256 draws (every 16 UUIDs). Bits 32-39
+  // repeat only after 2^40 draws and, unlike the top byte, are already mixed
+  // for the small seeds used here.
+  (rand >> 32).land(0xFFL).to_int().to_byte()
 }
 
 ///|

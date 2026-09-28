@@ -218,8 +218,8 @@ test "library_demo_output" {
   inspect(
     demo_output,
     content=(
-      #|UUID v4: 38372a81-ec5b-4e45-a0bf-12491463668d
-      #|UUID v7: 017e12ef-9c00-76ed-a8a7-da711ccbae35
+      #|UUID v4: 5649d1b7-f91e-456d-b39f-745a3d840e96
+      #|UUID v7: 017e12ef-9c00-7718-9e73-b4443363dd16
       #|Nil UUID: 00000000-0000-0000-0000-000000000000
     ),
   )
