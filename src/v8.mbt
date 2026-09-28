@@ -84,9 +84,12 @@ pub fn v8_mixed(timestamp_ms : Int64, custom_suffix : Int) -> Uuid {
     bytes[6 + i] = random_bytes[i]
   }
 
-  // Last 6 bytes: custom suffix
+  // Last 6 bytes: custom suffix, as a 48-bit two's-complement value.
+  // Widen first: shifting a 32-bit `Int` by 32 or 40 bits does not give its
+  // sign bits (the shift amount is taken modulo 32).
+  let suffix = custom_suffix.to_int64()
   for i = 0; i < 6; i = i + 1 {
-    bytes[10 + i] = (custom_suffix >> ((5 - i) * 8)).land(0xFF).to_byte()
+    bytes[10 + i] = (suffix >> ((5 - i) * 8)).land(0xFFL).to_int().to_byte()
   }
 
   // Set version and variant bits

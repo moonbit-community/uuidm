@@ -205,7 +205,7 @@ test "uuid_v8_mixed_snapshot" {
   let timestamp = 1640995200000L
   let custom_suffix = 0x123456
   let uuid = @uuidm.v8_mixed(timestamp, custom_suffix)
-  inspect(uuid.to_string(), content="017e12ef-9c00-84a3-a6cd-345600123456")
+  inspect(uuid.to_string(), content="017e12ef-9c00-84a3-a6cd-000000123456")
   @debug.debug_inspect(uuid.version(), content="Some(V8)")
 }
 

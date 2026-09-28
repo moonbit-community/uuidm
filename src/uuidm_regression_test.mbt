@@ -53,3 +53,21 @@ test "regression: variant distinguishes Microsoft and reserved UUIDs" {
   let ncs = @uuidm.from_string("00000000-0000-4000-7f00-000000000000").unwrap()
   inspect(ncs.variant(), content="Ncs")
 }
+
+///|
+test "regression: v8_mixed stores the suffix in the last 6 bytes" {
+  // Found by "qc: v8_mixed stores the 48-bit timestamp and the suffix in the
+  // last 6 bytes" (counterexample: timestamp 0, suffix 512): the suffix was
+  // shifted as a 32-bit Int by 40 and 32 bits, which wraps to 8 and 0, so
+  // octets 10-11 repeated octets 14-15 instead of holding the high bits.
+  let b = @uuidm.v8_mixed(0L, 512).bytes()
+  @debug.debug_inspect(
+    b[10:16].to_owned().map(x => x.to_int()),
+    content="[0, 0, 0, 0, 2, 0]",
+  )
+  let b = @uuidm.v8_mixed(0L, -2).bytes()
+  @debug.debug_inspect(
+    b[10:16].to_owned().map(x => x.to_int()),
+    content="[255, 255, 255, 255, 255, 254]",
+  )
+}
