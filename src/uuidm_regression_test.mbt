@@ -94,3 +94,18 @@ test "regression: string_to_bytes encodes astral characters as 4-byte UTF-8" {
   let lone = String::from_array([Int::unsafe_to_char(0xDC00), 'x'])
   @debug.debug_inspect(hex(lone), content="[\"ef\", \"bf\", \"bd\", \"78\"]")
 }
+
+///|
+test "regression: Uuid does not share its bytes with callers" {
+  // Found by "qc: a Uuid is a value: mutating the input or bytes() array
+  // does not change it": `Uuid::new` kept the caller's array and `bytes()`
+  // handed out the internal one, so e.g. `ns_dns.bytes()[0] = ...` silently
+  // changed the global DNS namespace (and every later v3_dns / v5_dns).
+  let src : FixedArray[Byte] = FixedArray::make(16, b'\x00')
+  let u = @uuidm.Uuid::new(src)
+  src[0] = b'\xFF'
+  inspect(u.is_nil(), content="true")
+  let out = @uuidm.ns_dns.bytes()
+  out[0] = b'\x00'
+  inspect(@uuidm.ns_dns, content="6ba7b810-9dad-11d1-80b4-00c04fd430c8")
+}

@@ -89,11 +89,12 @@ pub extend Version with @debug.Debug::{to_repr}
 
 ///|
 /// Create a new UUID from 16 bytes
+/// The bytes are copied: later changes to `bytes` do not affect the UUID.
 pub fn Uuid::new(bytes : FixedArray[Byte]) -> Uuid {
   if bytes.length() != 16 {
     abort("UUID must be exactly 16 bytes")
   }
-  Uuid(bytes)
+  Uuid(bytes.copy())
 }
 
 ///|
@@ -138,8 +139,9 @@ pub fn Uuid::from_bytes(
 
 ///|
 /// Get the raw bytes of the UUID
+/// Returns a fresh copy: changing it does not affect the UUID.
 pub fn Uuid::bytes(self : Uuid) -> FixedArray[Byte] {
-  self.0
+  self.0.copy()
 }
 
 ///|
