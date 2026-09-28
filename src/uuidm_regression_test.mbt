@@ -37,3 +37,19 @@ test "regression: from_urn requires the urn:uuid: prefix" {
   inspect(@uuidm.from_urn("urn:uuid:" + s).unwrap(), content=s)
   inspect(@uuidm.from_urn("URN:UUID:" + s).unwrap(), content=s)
 }
+
+///|
+test "regression: variant distinguishes Microsoft and reserved UUIDs" {
+  // Found by "qc: variant and version decode the RFC 9562 bit layout": the
+  // variant was read from the top 2 bits of octet 8 only, so 0b110 and 0b111
+  // were reported as RFC 9562 (and got a version).
+  let microsoft = @uuidm.from_string("00000000-0000-4000-c000-000000000000").unwrap()
+  inspect(microsoft.variant(), content="Microsoft")
+  inspect(microsoft.version() is None, content="true")
+  let reserved = @uuidm.from_string("00000000-0000-4000-e000-000000000000").unwrap()
+  inspect(reserved.variant(), content="Reserved")
+  let rfc = @uuidm.from_string("00000000-0000-4000-bf00-000000000000").unwrap()
+  inspect(rfc.variant(), content="Rfc9562")
+  let ncs = @uuidm.from_string("00000000-0000-4000-7f00-000000000000").unwrap()
+  inspect(ncs.variant(), content="Ncs")
+}

@@ -145,13 +145,14 @@ pub fn Uuid::bytes(self : Uuid) -> FixedArray[Byte] {
 ///|
 /// Get the variant of the UUID
 pub fn Uuid::variant(self : Uuid) -> Variant {
-  let bits = self.0[8].to_int() >> 6
+  // The variant is given by the top 3 bits of octet 8 (RFC 9562, table 1):
+  // 0xx NCS, 10x RFC 9562, 110 Microsoft, 111 reserved.
+  let bits = self.0[8].to_int() >> 5
   match bits {
-    0 | 1 => Variant::Ncs
-    2 | 3 => Variant::Rfc9562
+    0 | 1 | 2 | 3 => Variant::Ncs
+    4 | 5 => Variant::Rfc9562
     6 => Variant::Microsoft
-    7 => Variant::Reserved
-    _ => Variant::Reserved // Should not happen
+    _ => Variant::Reserved
   }
 }
 
