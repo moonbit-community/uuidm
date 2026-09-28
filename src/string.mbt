@@ -145,13 +145,26 @@ pub fn Uuid::to_urn(self : Uuid) -> String {
 
 ///|
 /// Parse UUID from URN string representation
+/// The `urn:uuid:` prefix is required (matched case-insensitively) and must be
+/// followed by a string accepted by `from_string`.
 pub fn from_urn(s : String) -> Uuid? {
-  if s.length() > 9 {
-    let uuid_part = s[9:].to_owned()
-    from_string(uuid_part)
-  } else {
-    None
+  let prefix = "urn:uuid:"
+  if s.length() <= prefix.length() {
+    return None
   }
+  for i = 0; i < prefix.length(); i = i + 1 {
+    let code = s.code_unit_at(i).to_int()
+    let lower = if code >= 'A'.to_int() && code <= 'Z'.to_int() {
+      code + 32
+    } else {
+      code
+    }
+    if lower != prefix.code_unit_at(i).to_int() {
+      return None
+    }
+  }
+  // The prefix is ASCII, so offset 9 is a character boundary.
+  from_string(s[prefix.length():].to_owned())
 }
 
 ///|

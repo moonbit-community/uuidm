@@ -26,3 +26,14 @@ test "regression: from_string parses the hex digits" {
     content="true",
   )
 }
+
+///|
+test "regression: from_urn requires the urn:uuid: prefix" {
+  // Found by "qc: from_urn inverts to_urn and requires the urn:uuid: prefix":
+  // the first 9 characters were dropped without being looked at.
+  let s = "550e8400-e29b-41d4-a716-446655440000"
+  inspect(@uuidm.from_urn("xxxxxxxxx" + s) is None, content="true")
+  inspect(@uuidm.from_urn("urn:uuid-" + s) is None, content="true")
+  inspect(@uuidm.from_urn("urn:uuid:" + s).unwrap(), content=s)
+  inspect(@uuidm.from_urn("URN:UUID:" + s).unwrap(), content=s)
+}
