@@ -8,7 +8,7 @@ test "real_world_usage_scenario" {
   let user_id = @uuidm.v4()
   let session_id = @uuidm.v4()
   inspect(user_id.is_nil(), content="false")
-  inspect(user_id != session_id, content="false")
+  inspect(user_id != session_id, content="true")
 
   // 2. Generate resource IDs based on names (v5)
   let api_endpoint = "https://api.example.com/users"
@@ -181,7 +181,7 @@ test "performance_consistency_test" {
       unique_count = unique_count + 1
     }
   }
-  inspect(unique_count >= 8, content="false")
+  inspect(unique_count, content="10")
 
   // Name-based UUIDs should be consistent
   let base_name = "performance.test.example.org"
@@ -215,14 +215,12 @@ test "performance_consistency_test" {
 test "library_demo_output" {
   // Test the demo function output
   let demo_output = @uuidm.demo()
-  inspect(
-    demo_output,
-    content=(
-      #|UUID v4: 5649d1b7-f91e-456d-b39f-745a3d840e96
-      #|UUID v7: 017e12ef-9c00-7718-9e73-b4443363dd16
-      #|Nil UUID: 00000000-0000-0000-0000-000000000000
-    ),
-  )
+  // The v4 / v7 values are random; check the layout only.
+  let lines = demo_output.split("\n").map(l => l.to_owned()).collect()
+  inspect(lines.length(), content="3")
+  inspect(lines[0].has_prefix("UUID v4: "), content="true")
+  inspect(lines[1].has_prefix("UUID v7: 017e12ef-9c00-7"), content="true")
+  inspect(lines[2], content="Nil UUID: 00000000-0000-0000-0000-000000000000")
 
   // The demo should include UUID examples
   inspect(demo_output.length() > 50, content="true")

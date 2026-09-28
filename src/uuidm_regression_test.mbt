@@ -123,3 +123,16 @@ test "regression: v4_with_rng does not cycle every 16 UUIDs" {
   let seventeenth = @uuidm.v4_with_rng(rng)
   inspect(first == seventeenth, content="false")
 }
+
+///|
+test "regression: successive v4 / v7 calls return different UUIDs" {
+  // Found by "qc: v4 / v4_bulk / v7 produce distinct UUIDs": `random_bytes`
+  // re-seeded a fresh generator from its `count` argument on every call, so
+  // `v4()` always returned the same UUID, `v4_bulk(n)` n copies of it, and
+  // `v7()` (fixed clock) was constant too.
+  inspect(@uuidm.v4() == @uuidm.v4(), content="false")
+  let bulk = @uuidm.v4_bulk(3)
+  inspect(bulk[0] == bulk[1] || bulk[1] == bulk[2], content="false")
+  inspect(@uuidm.v7() == @uuidm.v7(), content="false")
+  inspect(@uuidm.random_bytes(8) == @uuidm.random_bytes(8), content="false")
+}

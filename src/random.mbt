@@ -55,11 +55,15 @@ pub fn SimpleRng::fill_bytes(
 }
 
 ///|
-/// Generate random bytes using a new RNG instance
+/// Generator shared by `random_bytes` (and so by `v4`, `v7` and `v8_mixed`).
+/// Its state advances on every call, so successive calls return different
+/// bytes. The seed is fixed: the sequence is the same in every run.
+let shared_rng : SimpleRng = SimpleRng::new(1664525L)
+
+///|
+/// Generate random bytes from the shared generator
 pub fn random_bytes(count : Int) -> FixedArray[Byte] {
-  // Use a different seed based on the count to get variation
-  let rng = SimpleRng::new(1664525L + count.to_int64() * 1013904223L)
   let bytes : FixedArray[Byte] = FixedArray::make(count, b'\x00')
-  rng.fill_bytes(bytes)
+  shared_rng.fill_bytes(bytes)
   bytes
 }

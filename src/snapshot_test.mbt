@@ -116,7 +116,9 @@ test "uuid_v7_timestamp_snapshot" {
   // Test v7 with specific timestamp for deterministic output
   let timestamp = 1640995200000L // 2022-01-01 00:00:00 UTC
   let uuid = @uuidm.v7_with_timestamp(timestamp)
-  inspect(uuid.to_string(), content="017e12ef-9c00-7718-9e73-b4443363dd16")
+  // The timestamp fills octets 0-5; octets 6-15 are random (apart from the
+  // version / variant bits)
+  inspect(uuid.to_string()[0:15], content="017e12ef-9c00-7")
   @debug.debug_inspect(
     @uuidm.extract_timestamp(uuid),
     content="Some(1640995200000)",
@@ -205,7 +207,10 @@ test "uuid_v8_mixed_snapshot" {
   let timestamp = 1640995200000L
   let custom_suffix = 0x123456
   let uuid = @uuidm.v8_mixed(timestamp, custom_suffix)
-  inspect(uuid.to_string(), content="017e12ef-9c00-89e7-ab2f-000000123456")
+  // Octets 6-9 are random (apart from the version / variant bits)
+  let s = uuid.to_string()
+  inspect(s[0:15], content="017e12ef-9c00-8")
+  inspect(s[24:36], content="000000123456")
   @debug.debug_inspect(uuid.version(), content="Some(V8)")
 }
 
@@ -235,8 +240,8 @@ test "random_generation_snapshot" {
   inspect(bytes2.length(), content="8")
   inspect(bytes3.length(), content="16")
 
-  // Different calls should produce different results (due to different seeds)
-  inspect(bytes1 == bytes2, content="true")
+  // Different calls should produce different results
+  inspect(bytes1 == bytes2, content="false")
 }
 
 ///|
@@ -256,14 +261,12 @@ test "uuid_from_bytes_snapshot" {
 test "demo_function_snapshot" {
   // Test the demo function output
   let demo_output = @uuidm.demo()
-  inspect(
-    demo_output,
-    content=(
-      #|UUID v4: 5649d1b7-f91e-456d-b39f-745a3d840e96
-      #|UUID v7: 017e12ef-9c00-7718-9e73-b4443363dd16
-      #|Nil UUID: 00000000-0000-0000-0000-000000000000
-    ),
-  )
+  // The v4 / v7 values are random; check the layout only.
+  let lines = demo_output.split("\n").map(l => l.to_owned()).collect()
+  inspect(lines.length(), content="3")
+  inspect(lines[0].has_prefix("UUID v4: "), content="true")
+  inspect(lines[1].has_prefix("UUID v7: 017e12ef-9c00-7"), content="true")
+  inspect(lines[2], content="Nil UUID: 00000000-0000-0000-0000-000000000000")
 
   // The demo should include UUID examples
   inspect(demo_output.length() > 50, content="true")
