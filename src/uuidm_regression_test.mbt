@@ -136,3 +136,116 @@ test "regression: successive v4 / v7 calls return different UUIDs" {
   inspect(@uuidm.v7() == @uuidm.v7(), content="false")
   inspect(@uuidm.random_bytes(8) == @uuidm.random_bytes(8), content="false")
 }
+
+///|
+fn hex_digest(bytes : FixedArray[Byte]) -> String {
+  let buf = StringBuilder()
+  for b in bytes {
+    let x = b.to_int()
+    buf.write_char("0123456789abcdef".get_char(x >> 4).unwrap())
+    buf.write_char("0123456789abcdef".get_char(x & 0xF).unwrap())
+  }
+  buf.to_string()
+}
+
+///|
+test "regression: md5_hash and sha1_hash match the standard test vectors" {
+  // md5_hash / sha1_hash were placeholders, so v3 / v5 matched no other
+  // implementation (see the RFC 9562 vectors below).
+  let ascii = (s : String) => @uuidm.string_to_bytes(s)
+  inspect(
+    hex_digest(@uuidm.md5_hash(ascii(""))),
+    content="d41d8cd98f00b204e9800998ecf8427e",
+  )
+  inspect(
+    hex_digest(@uuidm.md5_hash(ascii("abc"))),
+    content="900150983cd24fb0d6963f7d28e17f72",
+  )
+  inspect(
+    hex_digest(@uuidm.md5_hash(ascii("message digest"))),
+    content="f96b697d7cb7938d525a2f31aaf161d0",
+  )
+  inspect(
+    hex_digest(@uuidm.sha1_hash(ascii(""))),
+    content="da39a3ee5e6b4b0d3255bfef95601890afd80709",
+  )
+  inspect(
+    hex_digest(@uuidm.sha1_hash(ascii("abc"))),
+    content="a9993e364706816aba3e25717850c26c9cd0d89d",
+  )
+  // Lengths around the 56- and 64-byte padding boundaries and multi-block
+  // messages (expected values from Python's hashlib).
+  let expected = [
+    (
+      55, "52c0e574e1198de5fe3f8f11440dcb1b", "ddf57317ef34bfee3b6df83d359098930eb278bc",
+    ),
+    (
+      56, "46c9907fc908ee68b1e7b8e71286a518", "a0d492bb0fc889d0eca3bc137066ab6f4f74f369",
+    ),
+    (
+      57, "1c805dd236c35cab25fcb1bc73802c51", "11a02dcf95859677a62e75024067c22b165d890f",
+    ),
+    (
+      63, "a62f6d59e837867693f042f5b8f5a236", "c55856749bef509bdfe6bfebfc7bf4e793e82132",
+    ),
+    (
+      64, "7160b8fb5e9e4023d549c3971fbaeead", "bede92be29c3874e1b54ddc77988d606fc857a8e",
+    ),
+    (
+      65, "70bd662e7aefbda85a0f7244167b7897", "b05a80522b053d6dc7e0a517d0e70212c7dad11f",
+    ),
+    (
+      119, "e84905d4214f4d1ca56c2cdcc152b143", "504e27376a6e0f0dba8295b85cb25dc4dfa17d23",
+    ),
+    (
+      120, "e3eb5a6c8669ea01a8c185b8abc8a5dc", "82134b02fb3f702491be9bed581eeab59334acb2",
+    ),
+    (
+      128, "10b2da1a82f16d99a81a7203fe9f02cb", "a09133e6730ffe899efb70204cb5646cd5dc24ee",
+    ),
+    (
+      1000, "10046f077f2082ac19676b8079f1cb1a", "4231a8a50a10fa9758db8ec71fdef855b751048a",
+    ),
+  ]
+  for entry in expected {
+    let (len, md5, sha1) = entry
+    let data = FixedArray::makei(len, i => ((i * 7 + 3) & 0xFF).to_byte())
+    assert_eq(hex_digest(@uuidm.md5_hash(data)), md5)
+    assert_eq(hex_digest(@uuidm.sha1_hash(data)), sha1)
+  }
+}
+
+///|
+test "regression: v3 / v5 match RFC 9562 and other implementations" {
+  // RFC 9562 appendix A.2 / A.4
+  inspect(
+    @uuidm.v3_dns("www.example.com"),
+    content="5df41881-3aed-3515-88a7-2f4a814cf09e",
+  )
+  inspect(
+    @uuidm.v5_dns("www.example.com"),
+    content="2ed6657d-e927-568b-95e1-2665a8aea6a2",
+  )
+  // Python's uuid module; the last name also needs 4-byte UTF-8
+  inspect(
+    @uuidm.v3_oid("1.3.6.1"),
+    content="dd1a1cef-13d5-368a-ad82-eca71acd4cd1",
+  )
+  inspect(
+    @uuidm.v5_x500("cn=John Smith"),
+    content="d1407efb-6828-5023-9fde-962c4ecc2adb",
+  )
+  inspect(
+    @uuidm.v3_url("https://例え.jp/😈"),
+    content="cd7e2264-102b-3b45-9bd2-ec7aadeb63f1",
+  )
+  inspect(
+    @uuidm.v5_url("https://例え.jp/😈"),
+    content="fbcdc681-f315-5f46-9062-ba5cf21dd237",
+  )
+  // The placeholder "MD5" was linear in the input bits: equal changes to
+  // two bytes 32 positions apart cancelled out, so these two names collided.
+  let a = "a" + "x".repeat(31) + "a"
+  let b = "b" + "x".repeat(31) + "b"
+  inspect(@uuidm.v3_dns(a) == @uuidm.v3_dns(b), content="false")
+}

@@ -105,9 +105,8 @@ test "uuid_v3_generation" {
     abort("v3 UUIDs with same name should be identical")
   }
 
-  // Note: This is the result from our simplified MD5 implementation
-  // A proper MD5 implementation would produce: 9073926b-929f-31c2-abc9-fad77ae3e8eb
-  inspect(uuid.to_string(), content="7faa0293-7faa-3293-bfaa-02937faa0293")
+  // Same value as other RFC 9562 implementations (e.g. Python's uuid.uuid3)
+  inspect(uuid.to_string(), content="9073926b-929f-31c2-abc9-fad77ae3e8eb")
 
   // Verify version and variant
   @debug.debug_inspect(uuid.version(), content="Some(V3)")
@@ -448,7 +447,7 @@ test "uuid_mixed_chinese_ascii_compliance" {
 /// Test Chinese characters against known reference implementations
 test "uuid_chinese_reference_comparison" {
   // Test with specific Chinese text that we can verify against other implementations
-  // Note: Our simplified MD5 won't match real implementations, but structure should be correct
+  // (exact values are pinned in "regression: v3 / v5 match RFC 9562 and other implementations")
 
   let test_text = "示例.com" // Example.com in Chinese
   let uuid = @uuidm.v3(@uuidm.ns_dns, test_text)
@@ -715,7 +714,7 @@ test "uuid_chinese_javascript_comparison" {
 /// Test against known JavaScript/Node.js uuid library reference values
 test "uuid_javascript_reference_values" {
   // Test with known values that can be verified against JavaScript implementations
-  // Note: Our simplified MD5/SHA-1 won't match exactly, but the structure should be correct
+  // (exact values are pinned in "regression: v3 / v5 match RFC 9562 and other implementations")
 
   // Test UTF-8 encoding with simple ASCII first
   let ascii_text = "example.com"
@@ -732,9 +731,6 @@ test "uuid_javascript_reference_values" {
   // Should have correct structure
   @debug.debug_inspect(chinese_uuid.version(), content="Some(V3)")
   inspect(chinese_uuid.variant(), content="Rfc9562")
-
-  // The actual UUID values will still differ due to our simplified hash,
-  // but the UTF-8 encoding is now correct
 
   // Test that our UTF-8 encoding produces the expected byte sequences
   let chinese_bytes = @uuidm.string_to_bytes("中") // Single Chinese character

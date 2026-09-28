@@ -17,7 +17,7 @@ test "real_world_usage_scenario" {
   inspect(resource_id == same_resource_id, content="true")
   inspect(
     resource_id.to_string(),
-    content="5fc507ca-c678-5cbd-ae06-c563837b0615",
+    content="af9d601c-4ce1-5c4e-af69-65bfb58c1968",
   )
 
   // 3. Generate time-ordered event IDs (v7)
