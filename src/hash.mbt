@@ -157,10 +157,23 @@ fn encode_utf8_codepoint(codepoint : Int) -> Array[Byte] {
 pub fn string_to_bytes(s : String) -> FixedArray[Byte] {
   let utf8_bytes : Array[Byte] = []
 
-  // Convert each character to its UTF-8 byte sequence
-  for i = 0; i < s.length(); i = i + 1 {
-    let char = s.code_unit_at(i)
-    let codepoint = char.to_int()
+  // Convert each character to its UTF-8 byte sequence. The string is UTF-16:
+  // a surrogate pair is one code point, and an unpaired surrogate becomes
+  // U+FFFD (as `TextEncoder` does).
+  let mut i = 0
+  while i < s.length() {
+    let mut codepoint = s.code_unit_at(i).to_int()
+    if codepoint >= 0xD800 && codepoint <= 0xDBFF && i + 1 < s.length() {
+      let low = s.code_unit_at(i + 1).to_int()
+      if low >= 0xDC00 && low <= 0xDFFF {
+        codepoint = 0x10000 + ((codepoint - 0xD800) << 10) + (low - 0xDC00)
+        i = i + 1
+      }
+    }
+    if codepoint >= 0xD800 && codepoint <= 0xDFFF {
+      codepoint = 0xFFFD
+    }
+    i = i + 1
     let char_bytes = encode_utf8_codepoint(codepoint)
 
     // Add all bytes from this character to the result

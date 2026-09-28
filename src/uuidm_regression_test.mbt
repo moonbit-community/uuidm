@@ -71,3 +71,26 @@ test "regression: v8_mixed stores the suffix in the last 6 bytes" {
     content="[255, 255, 255, 255, 255, 254]",
   )
 }
+
+///|
+test "regression: string_to_bytes encodes astral characters as 4-byte UTF-8" {
+  // Found by "qc: names are hashed as their UTF-8 encoding" (counterexample:
+  // "\u{10FFFF}"): each UTF-16 code unit was encoded on its own, so a
+  // surrogate pair became two 3-byte sequences (CESU-8) and v3 / v5 hashed
+  // bytes no other implementation produces.
+  let hex = (s : String) => {
+    @uuidm.string_to_bytes(s)
+    .iter()
+    .map(b => b.to_int().to_string(radix=16))
+    .collect()
+  }
+  @debug.debug_inspect(
+    hex("\u{10FFFF}"),
+    content="[\"f4\", \"8f\", \"bf\", \"bf\"]",
+  )
+  @debug.debug_inspect(hex("😈"), content="[\"f0\", \"9f\", \"98\", \"88\"]")
+  // Found by "qc: unpaired surrogates in names are encoded as U+FFFD, like
+  // TextEncoder" (counterexample: a lone U+DC00).
+  let lone = String::from_array([Int::unsafe_to_char(0xDC00), 'x'])
+  @debug.debug_inspect(hex(lone), content="[\"ef\", \"bf\", \"bd\", \"78\"]")
+}
