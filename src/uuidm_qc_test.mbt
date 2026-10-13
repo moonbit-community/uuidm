@@ -146,7 +146,7 @@ fn to_array(bytes : FixedArray[Byte]) -> Array[Byte] {
 ///|
 /// Unsigned lexicographic comparison of two equal-length byte arrays,
 /// normalised to -1 / 0 / 1.
-fn lex_compare(a : Array[Byte], b : Array[Byte]) -> Int {
+fn lex_compare(a : Array[Byte], b : Array[Byte]) -> Int32 {
   for i in 0..<a.length() {
     if a[i] < b[i] {
       return -1
@@ -160,12 +160,12 @@ fn lex_compare(a : Array[Byte], b : Array[Byte]) -> Int {
 
 ///|
 /// `k mod n` in `[0, n)`, also for negative `k` (and `Int::min_value`).
-fn non_negative_mod(k : Int, n : Int) -> Int {
+fn non_negative_mod(k : Int32, n : Int32) -> Int32 {
   (k % n + n) % n
 }
 
 ///|
-fn sign(x : Int) -> Int {
+fn sign(x : Int32) -> Int32 {
   if x < 0 {
     -1
   } else if x > 0 {
@@ -212,7 +212,7 @@ fn ascii_lower(s : String) -> String {
     .to_array()
     .map(c => {
       if c >= 'A' && c <= 'Z' {
-        Int::unsafe_to_char(c.to_int() + 32)
+        Int32::unsafe_to_char(c.to_int() + 32)
       } else {
         c
       }
@@ -227,7 +227,7 @@ fn ascii_upper(s : String) -> String {
     .to_array()
     .map(c => {
       if c >= 'a' && c <= 'z' {
-        Int::unsafe_to_char(c.to_int() - 32)
+        Int32::unsafe_to_char(c.to_int() - 32)
       } else {
         c
       }
@@ -246,8 +246,8 @@ fn remove_hyphens(s : String) -> String {
 priv struct Malformed {
   uuid : B16
   simple : Bool
-  kind : Int
-  pos : Int
+  kind : Int32
+  pos : Int32
   ch : Char
 } derive(Debug)
 
@@ -400,7 +400,7 @@ test "qc: from_string inverts to_string and to_string_simple, in any case" {
 ///|
 test "qc: from_urn inverts to_urn and requires the urn:uuid: prefix" {
   @qc.check(
-    (input : (B16, Int)) => {
+    (input : (B16, Int32)) => {
       let (b, k) = input
       let u = b.uuid()
       let s = u.to_string()
@@ -532,7 +532,7 @@ test "qc: new / from_bytes / bytes round-trip and nil / max detection" {
 ///|
 test "qc: a Uuid is a value: mutating the input or bytes() array does not change it" {
   @qc.check(
-    (input : (B16, Int)) => {
+    (input : (B16, Int32)) => {
       let (b, k) = input
       let i = non_negative_mod(k, 16)
       let src = FixedArray::from_array(b.bytes)
@@ -616,7 +616,7 @@ test "qc: variant and version decode the RFC 9562 bit layout" {
 ///|
 /// The generated UUID carries the RFC 9562 variant bits (10) and `version` in
 /// the high nibble of octet 6, both in the bits and as decoded.
-fn has_version(u : @uuidm.Uuid, version : Int) -> Bool {
+fn has_version(u : @uuidm.Uuid, version : Int32) -> Bool {
   let b = u.bytes()
   b[6].to_int() >> 4 == version &&
   b[8].to_int() >> 6 == 2 &&
@@ -652,7 +652,7 @@ test "qc: v8 sets version 8 / RFC variant and keeps the other 122 bits" {
 }
 
 ///|
-fn be_int64(b : FixedArray[Byte], start : Int, len : Int) -> Int64 {
+fn be_int64(b : FixedArray[Byte], start : Int32, len : Int32) -> Int64 {
   let mut x = 0L
   for i in start..<(start + len) {
     x = (x << 8) | b[i].to_int64()
@@ -668,7 +668,7 @@ fn masked_eq(a : Int64, b : Int64, mask : Int64) -> Bool {
 ///|
 test "qc: v8_from_int128 and v8_counter store their fields big-endian" {
   @qc.check(
-    (input : (Int64, Int64, Int, Int)) => {
+    (input : (Int64, Int64, Int32, Int32)) => {
       let (hi, lo, node, app) = input
       let u = @uuidm.v8_from_int128(hi, lo)
       let b = u.bytes()
@@ -689,7 +689,7 @@ test "qc: v8_from_int128 and v8_counter store their fields big-endian" {
 ///|
 test "qc: v8_mixed stores the 48-bit timestamp and the suffix in the last 6 bytes" {
   @qc.check(
-    (input : (Int64, Int)) => {
+    (input : (Int64, Int32)) => {
       let (ts, suffix) = input
       let ts = ts & 0xFFFF_FFFF_FFFFL
       let u = @uuidm.v8_mixed(ts, suffix)
@@ -796,7 +796,7 @@ test "qc: names are hashed as their UTF-8 encoding" {
 ///|
 test "qc: unpaired surrogates in names are encoded as U+FFFD, like TextEncoder" {
   @qc.check(
-    (input : (Name, Int, Bool)) => {
+    (input : (Name, Int32, Bool)) => {
       let (name, k, high) = input
       let surrogate = if high {
         0xD800 + non_negative_mod(k, 0x400)
@@ -808,7 +808,7 @@ test "qc: unpaired surrogates in names are encoded as U+FFFD, like TextEncoder" 
       let prefix = name.text()
       let buf = StringBuilder()
       buf.write_string(prefix)
-      buf.write_char(Int::unsafe_to_char(surrogate))
+      buf.write_char(Int32::unsafe_to_char(surrogate))
       buf.write_char('x')
       let s = buf.to_string()
       let expected = @utf8.encode(prefix).to_array() +
@@ -893,7 +893,7 @@ test "qc: v7 UUIDs are ordered by their timestamps" {
 ///|
 test "qc: v7_sequence is strictly increasing with consecutive timestamps" {
   @qc.check(
-    (n : Int) => {
+    (n : Int32) => {
       let n = non_negative_mod(n, 64)
       let seq = @uuidm.v7_sequence(n)
       let mut ok = seq.length() == n
@@ -959,7 +959,7 @@ test "qc: v4_with_rng never repeats a UUID within 256 draws" {
 ///|
 test "qc: v4 / v4_bulk / v7 produce distinct UUIDs" {
   @qc.check(
-    (n : Int) => {
+    (n : Int32) => {
       let n = 2 + non_negative_mod(n, 40)
       let bulk = @uuidm.v4_bulk(n)
       let singles = Array::makei(n, _ => @uuidm.v4())

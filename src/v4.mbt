@@ -25,7 +25,7 @@ pub fn v4_with_rng(rng : SimpleRng) -> Uuid {
 
 ///|
 /// Generate multiple random UUIDs
-pub fn v4_bulk(count : Int) -> Array[Uuid] {
+pub fn v4_bulk(count : Int32) -> Array[Uuid] {
   let result : Array[Uuid] = []
   for i = 0; i < count; i = i + 1 {
     result.push(v4())

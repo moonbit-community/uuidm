@@ -4,14 +4,14 @@
 /// Basic MD5 implementation for UUID v3
 /// This is a simplified implementation for demonstration
 struct Md5 {
-  mut _h : FixedArray[UInt] // Prefixed with _ to indicate unused
+  mut _h : FixedArray[UInt32] // Prefixed with _ to indicate unused
   mut _length : Int64 // Prefixed with _ to indicate unused
 }
 
 ///|
 /// Create a new MD5 hasher
 pub fn Md5::new() -> Md5 {
-  let h : FixedArray[UInt] = FixedArray::make(4, 0U)
+  let h : FixedArray[UInt32] = FixedArray::make(4, 0U)
   h[0] = 0x67452301U
   h[1] = 0xEFCDAB89U
   h[2] = 0x98BADCFEU
@@ -21,7 +21,7 @@ pub fn Md5::new() -> Md5 {
 
 ///|
 /// Left-rotate a 32-bit word
-fn rotl32(x : UInt, n : Int) -> UInt {
+fn rotl32(x : UInt32, n : Int32) -> UInt32 {
   (x << n) | (x >> (32 - n))
 }
 
@@ -51,7 +51,7 @@ fn pad_message(data : FixedArray[Byte], big_endian : Bool) -> FixedArray[Byte] {
 
 ///|
 /// MD5 per-round shift amounts (RFC 1321)
-let md5_shifts : FixedArray[Int] = [
+let md5_shifts : FixedArray[Int32] = [
   7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 5, 9, 14, 20, 5, 9,
   14, 20, 5, 9, 14, 20, 5, 9, 14, 20, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23,
   4, 11, 16, 23, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21,
@@ -59,7 +59,7 @@ let md5_shifts : FixedArray[Int] = [
 
 ///|
 /// MD5 constants: floor(abs(sin(i + 1)) * 2^32) (RFC 1321)
-let md5_table : FixedArray[UInt] = [
+let md5_table : FixedArray[UInt32] = [
   0xD76AA478U, 0xE8C7B756U, 0x242070DBU, 0xC1BDCEEEU, 0xF57C0FAFU, 0x4787C62AU, 0xA8304613U,
   0xFD469501U, 0x698098D8U, 0x8B44F7AFU, 0xFFFF5BB1U, 0x895CD7BEU, 0x6B901122U, 0xFD987193U,
   0xA679438EU, 0x49B40821U, 0xF61E2562U, 0xC040B340U, 0x265E5A51U, 0xE9B6C7AAU, 0xD62F105DU,
@@ -80,7 +80,7 @@ pub fn md5_hash(data : FixedArray[Byte]) -> FixedArray[Byte] {
   let mut b0 = 0xEFCDAB89U
   let mut c0 = 0x98BADCFEU
   let mut d0 = 0x10325476U
-  let m : FixedArray[UInt] = FixedArray::make(16, 0U)
+  let m : FixedArray[UInt32] = FixedArray::make(16, 0U)
   for chunk = 0; chunk < msg.length(); chunk = chunk + 64 {
     for i = 0; i < 16; i = i + 1 {
       let j = chunk + i * 4
@@ -136,7 +136,7 @@ pub fn sha1_hash(data : FixedArray[Byte]) -> FixedArray[Byte] {
   let mut h2 = 0x98BADCFEU
   let mut h3 = 0x10325476U
   let mut h4 = 0xC3D2E1F0U
-  let w : FixedArray[UInt] = FixedArray::make(80, 0U)
+  let w : FixedArray[UInt32] = FixedArray::make(80, 0U)
   for chunk = 0; chunk < msg.length(); chunk = chunk + 64 {
     for i = 0; i < 16; i = i + 1 {
       let j = chunk + i * 4
@@ -192,7 +192,7 @@ pub fn sha1_hash(data : FixedArray[Byte]) -> FixedArray[Byte] {
 ///|
 /// Convert a Unicode code point to UTF-8 bytes
 /// Returns the UTF-8 byte sequence for a given Unicode code point
-fn encode_utf8_codepoint(codepoint : Int) -> Array[Byte] {
+fn encode_utf8_codepoint(codepoint : Int32) -> Array[Byte] {
   let bytes : Array[Byte] = []
   if codepoint <= 0x7F {
     // 1-byte sequence: 0xxxxxxx
