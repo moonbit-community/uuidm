@@ -458,19 +458,19 @@ test "uuid_chinese_reference_comparison" {
 
   // Check that it contains proper hyphens at correct positions
   inspect(
-    Int::unsafe_to_char(uuid_str.code_unit_at(8).to_int()) == '-',
+    Int32::unsafe_to_char(uuid_str.code_unit_at(8).to_int()) == '-',
     content="true",
   )
   inspect(
-    Int::unsafe_to_char(uuid_str.code_unit_at(13).to_int()) == '-',
+    Int32::unsafe_to_char(uuid_str.code_unit_at(13).to_int()) == '-',
     content="true",
   )
   inspect(
-    Int::unsafe_to_char(uuid_str.code_unit_at(18).to_int()) == '-',
+    Int32::unsafe_to_char(uuid_str.code_unit_at(18).to_int()) == '-',
     content="true",
   )
   inspect(
-    Int::unsafe_to_char(uuid_str.code_unit_at(23).to_int()) == '-',
+    Int32::unsafe_to_char(uuid_str.code_unit_at(23).to_int()) == '-',
     content="true",
   )
 
@@ -673,19 +673,19 @@ test "uuid_chinese_javascript_comparison" {
   let uuid_str = our_uuid.to_string()
   inspect(uuid_str.length(), content="36")
   inspect(
-    Int::unsafe_to_char(uuid_str.code_unit_at(8).to_int()) == '-',
+    Int32::unsafe_to_char(uuid_str.code_unit_at(8).to_int()) == '-',
     content="true",
   )
   inspect(
-    Int::unsafe_to_char(uuid_str.code_unit_at(13).to_int()) == '-',
+    Int32::unsafe_to_char(uuid_str.code_unit_at(13).to_int()) == '-',
     content="true",
   )
   inspect(
-    Int::unsafe_to_char(uuid_str.code_unit_at(18).to_int()) == '-',
+    Int32::unsafe_to_char(uuid_str.code_unit_at(18).to_int()) == '-',
     content="true",
   )
   inspect(
-    Int::unsafe_to_char(uuid_str.code_unit_at(23).to_int()) == '-',
+    Int32::unsafe_to_char(uuid_str.code_unit_at(23).to_int()) == '-',
     content="true",
   )
 

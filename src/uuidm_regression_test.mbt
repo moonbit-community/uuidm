@@ -91,7 +91,7 @@ test "regression: string_to_bytes encodes astral characters as 4-byte UTF-8" {
   @debug.debug_inspect(hex("😈"), content="[\"f0\", \"9f\", \"98\", \"88\"]")
   // Found by "qc: unpaired surrogates in names are encoded as U+FFFD, like
   // TextEncoder" (counterexample: a lone U+DC00).
-  let lone = String::from_array([Int::unsafe_to_char(0xDC00), 'x'])
+  let lone = String::from_array([Int32::unsafe_to_char(0xDC00), 'x'])
   @debug.debug_inspect(hex(lone), content="[\"ef\", \"bf\", \"bd\", \"78\"]")
 }
 

@@ -42,7 +42,11 @@ pub fn v8_from_int128(high : Int64, low : Int64) -> Uuid {
 ///|
 /// Generate a custom UUID with application-specific structure
 /// Example: counter-based UUID with specific formatting
-pub fn v8_counter(counter : Int64, node_id : Int, application_id : Int) -> Uuid {
+pub fn v8_counter(
+  counter : Int64,
+  node_id : Int32,
+  application_id : Int32,
+) -> Uuid {
   let bytes : FixedArray[Byte] = FixedArray::make(16, b'\x00')
 
   // First 8 bytes: counter
@@ -67,7 +71,7 @@ pub fn v8_counter(counter : Int64, node_id : Int, application_id : Int) -> Uuid 
 
 ///|
 /// Generate a custom UUID with mixed content (timestamp + random + custom)
-pub fn v8_mixed(timestamp_ms : Int64, custom_suffix : Int) -> Uuid {
+pub fn v8_mixed(timestamp_ms : Int64, custom_suffix : Int32) -> Uuid {
   let bytes : FixedArray[Byte] = FixedArray::make(16, b'\x00')
 
   // First 6 bytes: timestamp (like v7)

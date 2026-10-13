@@ -15,13 +15,13 @@ fn byte_to_hex(b : Byte) -> String {
   } else {
     'a'.to_int() + low - 10
   }
-  Int::unsafe_to_char(high_char).to_string() +
-  Int::unsafe_to_char(low_char).to_string()
+  Int32::unsafe_to_char(high_char).to_string() +
+  Int32::unsafe_to_char(low_char).to_string()
 }
 
 ///|
 /// Convert a hexadecimal character to its numeric value
-fn hex_char_to_int(c : Char) -> Int {
+fn hex_char_to_int(c : Char) -> Int32 {
   let code = c.to_int()
   if code >= '0'.to_int() && code <= '9'.to_int() {
     code - '0'.to_int()
@@ -83,7 +83,7 @@ pub fn Uuid::to_string_simple(self : Uuid) -> String {
 
 ///|
 /// Value of an ASCII hexadecimal digit given as a UTF-16 code unit, or -1.
-fn hex_digit_value(code : Int) -> Int {
+fn hex_digit_value(code : Int32) -> Int32 {
   if code >= '0'.to_int() && code <= '9'.to_int() {
     code - '0'.to_int()
   } else if code >= 'a'.to_int() && code <= 'f'.to_int() {

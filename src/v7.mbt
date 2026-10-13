@@ -83,7 +83,7 @@ pub fn extract_timestamp(uuid : Uuid) -> Int64? {
 
 ///|
 /// Generate multiple time-ordered UUIDs ensuring monotonicity
-pub fn v7_sequence(count : Int) -> Array[Uuid] {
+pub fn v7_sequence(count : Int32) -> Array[Uuid] {
   let base_timestamp = current_timestamp_ms()
   let result : Array[Uuid] = []
   for i = 0; i < count; i = i + 1 {

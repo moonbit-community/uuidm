@@ -62,7 +62,7 @@ let shared_rng : SimpleRng = SimpleRng::new(1664525L)
 
 ///|
 /// Generate random bytes from the shared generator
-pub fn random_bytes(count : Int) -> FixedArray[Byte] {
+pub fn random_bytes(count : Int32) -> FixedArray[Byte] {
   let bytes : FixedArray[Byte] = FixedArray::make(count, b'\x00')
   shared_rng.fill_bytes(bytes)
   bytes
